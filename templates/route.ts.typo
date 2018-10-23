@@ -1,18 +1,16 @@
-import { Controller, route } from 'typolar/controller'
-import * as guards from 'typolar/guards'
-import { Next, Request, Response } from 'typolar/types'
+import { Controller, guards, route, types } from 'typolar'
 
 @route('<%name|camelcase%>')
-export = class <%name|pascalcase%>Controller extends Controller {
+export default class <%name|pascalcase%>Controller extends Controller {
 
     @route('/:id', [guards.params({ id: '<%name|spacecase%> id' })])
-    get<%name|pascalcase%>(req: Request, res: Response, next: Next) {
+    get<%name|pascalcase%>(req: types.Request, res: types.Response, next: types.Next) {
         // TODO: handle request
         res.json({ id: req.params.id })
     }
 
     @route('/', 'post', [guards.fields({ name: '<%name|spacecase%> name' })])
-    create<%name|pascalcase%>(req: Request, res: Response, next: Next) {
+    create<%name|pascalcase%>(req: types.Request, res: types.Response, next: types.Next) {
         // TODO: handle request
         res.json({ name: req.body.name })
     }

@@ -1,7 +1,6 @@
-import config from 'typolar/config'
-import { Service, Contract } from 'typolar/service'
+import { config, Service } from 'typolar'
 
-export class <%name|pascalcase%>Service extends Service<Contract> {
+export class <%name|pascalcase%>Service extends Service<Service.Contract> {
     /**
         * Get <%name|spacecase%> by id
         *
@@ -13,4 +12,4 @@ export class <%name|pascalcase%>Service extends Service<Contract> {
     }
 }
 
-export = <%name|pascalcase%>Service.create(config.app.service) as <%name|pascalcase%>Service
+export default <%name|pascalcase%>Service.create(config.app.service) as <%name|pascalcase%>Service

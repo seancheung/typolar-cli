@@ -213,6 +213,12 @@ function create(dir, options) {
         path.join(dir, dirs.config, 'logger.json'),
         vars
     );
+    // index.ts
+    utils.copy(
+        'templates/index.ts.typo',
+        path.join(dir, dirs.src, 'index.ts'),
+        vars
+    );
     if (options.tslint) {
         // tslint.json
         utils.copy(

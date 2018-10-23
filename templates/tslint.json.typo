@@ -3,7 +3,7 @@
         "tslint:recommended",
         "tslint-consistent-codestyle"
 #if prettier
-        ,"tslint-config-prettier'"
+        ,"tslint-config-prettier"
 #end
     ],
     "defaultSeverity": "error",
