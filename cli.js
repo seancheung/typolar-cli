@@ -11,14 +11,16 @@ program
     .option('-v, --verbose', 'enable verbose output');
 
 program
-    .command('create <name>')
+    .command('new <name>')
     .description('create a new app')
+    .option('--template <template>', 'create from a template')
     .option('--no-tslint', 'no tslint integration')
     .option('--no-prettier', 'no prettier integration')
     .option('--docs', 'add documentation generator')
     .option('--vscode', 'add vscode integration')
     .option('--convention', 'file name convention', 'spinalcase')
     .option('--no-install', 'skip npm install')
+    .option('--no-update', 'skip npm update')
     .option('--no-init', 'skip git init')
     .option('--no-hide', 'do not hide config files in vscode')
     .action(env)
@@ -225,7 +227,6 @@ function create(dir, options) {
         tslint: !!options.tslint,
         prettier: !!options.prettier,
         convention: 'spinalcase',
-        vscode: !!options.vscode,
         docs: !!options.docs,
         hide: !!options.hide
     };
@@ -306,7 +307,7 @@ function create(dir, options) {
         path.join(dir, dirs.config, 'logger.json'),
         vars
     );
-    if (rc.vscode) {
+    if (options.vscode) {
         const vscode = path.join(dir, '.vscode');
         fs.mkdirSync(vscode);
         parseCopy(
@@ -331,6 +332,9 @@ function create(dir, options) {
         );
     }
 
+    if (options.update) {
+        exec(dir, 'npm', 'up');
+    }
     if (options.install) {
         exec(dir, 'npm', 'i');
     }
