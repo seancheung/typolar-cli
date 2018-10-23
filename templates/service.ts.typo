@@ -1,4 +1,4 @@
-import config from 'kuconfig'
+import config from 'typolar/config'
 import { Service, Contract } from 'typolar/service'
 
 export class <%name|pascalcase%>Service extends Service<Contract> {
@@ -13,4 +13,4 @@ export class <%name|pascalcase%>Service extends Service<Contract> {
     }
 }
 
-export default <%name|pascalcase%>Service.create(config.app.service) as <%name|pascalcase%>Service
+export = <%name|pascalcase%>Service.create(config.app.service) as <%name|pascalcase%>Service

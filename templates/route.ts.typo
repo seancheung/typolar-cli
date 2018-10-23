@@ -3,7 +3,7 @@ import * as guards from 'typolar/guards'
 import { Next, Request, Response } from 'typolar/types'
 
 @route('<%name|camelcase%>')
-export default class <%name|pascalcase%>Controller extends Controller {
+export = class <%name|pascalcase%>Controller extends Controller {
 
     @route('/:id', [guards.params({ id: '<%name|spacecase%> id' })])
     get<%name|pascalcase%>(req: Request, res: Response, next: Next) {

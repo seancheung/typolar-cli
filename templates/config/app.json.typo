@@ -15,11 +15,17 @@
         },
         "mock": {
             "$env": "APP_ROUTER_MOCK"
-        }
+        },
+        "path": "${routes}"
     },
     "service": {
         "baseUrl": {
             "$env": "APP_SERVICE_BASEURL"
-        }
+        },
+        "style": "pascalcase"
+    },
+    "view": {
+        "engine": "ejs",
+        "path": "${views}"
     }
 }
