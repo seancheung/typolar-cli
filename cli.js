@@ -3,12 +3,10 @@ const program = require('commander');
 const chalk = require('chalk');
 const utils = require('./utils');
 
-class HandledError extends Error {}
-
 program
     .version('0.1.0')
     .option('-w, --wrokdir <dir>', 'change work directory')
-    .option('--config <filepath>', 'set config filepath')
+    .option('--rc <filepath>', 'set typolarrc filepath')
     .option('-v, --verbose', 'enable verbose output');
 
 program
@@ -33,7 +31,36 @@ program
     .option('-e, --env <environment>', 'set environment', 'development')
     .action(setup)
     .action(env)
+    .action(wrap(scope))
     .action(wrap(show));
+
+program
+    .command('make:model <name>')
+    .description('generate a model file')
+    .action(setup)
+    .action(wrap(scope))
+    .action(wrap(makeModel));
+
+program
+    .command('make:route <name>')
+    .description('generate a route file')
+    .action(setup)
+    .action(wrap(scope))
+    .action(wrap(makeRoute));
+
+program
+    .command('make:service <name>')
+    .description('generate a service file')
+    .action(setup)
+    .action(wrap(scope))
+    .action(wrap(makeService));
+
+program
+    .command('make:test <name>')
+    .description('generate a test file')
+    .action(setup)
+    .action(wrap(scope))
+    .action(wrap(makeTest));
 
 const commands = program.commands.map(cmd => cmd._name);
 
@@ -88,12 +115,18 @@ function env(options) {
     );
 }
 
+function scope() {
+    if (!utils.exist('.typolarrc')) {
+        throw new utils.HandledError('not in a valid app directory');
+    }
+}
+
 function wrap(func) {
     return async (...args) => {
         try {
             await func(...args);
         } catch (error) {
-            if (error instanceof HandledError) {
+            if (error instanceof utils.HandledError) {
                 console.error(chalk.red(error.message));
             } else {
                 const util = require('util');
@@ -109,7 +142,7 @@ function create(dir, options) {
     const path = require('path');
     if (fs.existsSync(dir)) {
         if (fs.readdirSync(dir).length > 0) {
-            throw new HandledError(
+            throw new utils.HandledError(
                 `directory ${chalk.yellow(dir)} is not empty`
             );
         }
@@ -124,7 +157,6 @@ function create(dir, options) {
         docs: !!options.docs,
         hide: !!options.hide
     };
-    utils.write(path.join(dir, '.typolarrc'), rc);
     const dirs = {
         src: 'src',
         models: 'src/models',
@@ -135,9 +167,13 @@ function create(dir, options) {
         tests: 'tests',
         build: 'lib'
     };
-    if (rc.docs) {
+    if (options.docs) {
         Object.assign(dirs, { docs: 'docs' });
     }
+    utils.write(
+        path.join(dir, '.typolarrc'),
+        Object.assign({}, rc, { paths: dirs })
+    );
     for (const key in dirs) {
         fs.mkdirSync(path.join(dir, dirs[key]));
     }
@@ -148,42 +184,18 @@ function create(dir, options) {
         path.join(dir, 'package.json'),
         vars
     );
-    if (rc.tslint) {
-        // tslint.json
-        utils.copy(
-            'templates/tslint.json.typo',
-            path.join(dir, 'tslint.json'),
-            vars
-        );
-    }
-    if (rc.prettier) {
-        // .prettierrc
-        utils.copy(
-            'templates/.prettierrc.typo',
-            path.join(dir, '.prettierrc'),
-            vars
-        );
-        // .prettierignore
-        utils.copy(
-            'templates/.prettierignore.typo',
-            path.join(dir, '.prettierignore'),
-            vars
-        );
-    }
-    if (rc.tslint) {
-        // tsconfig
-        utils.copy(
-            'templates/tsconfig.json.typo',
-            path.join(dir, 'tsconfig.json'),
-            vars
-        );
-        // tsconfig.prod
-        utils.copy(
-            'templates/tsconfig.prod.json.typo',
-            path.join(dir, 'tsconfig.prod.json'),
-            vars
-        );
-    }
+    // tsconfig
+    utils.copy(
+        'templates/tsconfig.json.typo',
+        path.join(dir, 'tsconfig.json'),
+        vars
+    );
+    // tsconfig.prod
+    utils.copy(
+        'templates/tsconfig.prod.json.typo',
+        path.join(dir, 'tsconfig.prod.json'),
+        vars
+    );
     // .gitignore
     utils.copy('templates/.gitignore.typo', path.join(dir, '.gitignore'), vars);
     // env
@@ -201,6 +213,34 @@ function create(dir, options) {
         path.join(dir, dirs.config, 'logger.json'),
         vars
     );
+    if (options.tslint) {
+        // tslint.json
+        utils.copy(
+            'templates/tslint.json.typo',
+            path.join(dir, 'tslint.json'),
+            vars
+        );
+        // tests/tslint.json
+        utils.copy(
+            'templates/tslint.tests.json.typo',
+            path.join(dir, dirs.tests, 'tslint.json'),
+            vars
+        );
+    }
+    if (options.prettier) {
+        // .prettierrc
+        utils.copy(
+            'templates/.prettierrc.typo',
+            path.join(dir, '.prettierrc'),
+            vars
+        );
+        // .prettierignore
+        utils.copy(
+            'templates/.prettierignore.typo',
+            path.join(dir, '.prettierignore'),
+            vars
+        );
+    }
     if (options.vscode) {
         const vscode = path.join(dir, '.vscode');
         fs.mkdirSync(vscode);
@@ -238,13 +278,69 @@ function create(dir, options) {
 }
 
 function show() {
-    if (!utils.exist('.typolarrc')) {
-        throw new HandledError('not in a valid app directory');
-    }
     const rc = utils.read('.typolarrc', true);
     const config = require('kuconfig');
     const util = require('util');
     delete config.__;
-    console.log(chalk.blue('preference:\n'), util.inspect(rc, false, null, true));
-    console.log(chalk.blue('config:\n'), util.inspect(config, false, null, true));
+    console.log(
+        chalk.blue('preference:\n'),
+        util.inspect(rc, false, null, true)
+    );
+    console.log(
+        chalk.blue('config:\n'),
+        util.inspect(config, false, null, true)
+    );
+}
+
+async function makeModel(name) {
+    const prefs = utils.prefs();
+    name = name.replace(/[-_]?model$/i, '');
+    const filepath = await utils.writeModule(
+        prefs,
+        name,
+        prefs.paths.models,
+        'templates/model.ts.typo',
+        {}
+    );
+    console.log(`created file at ${chalk.blue(filepath)}`);
+}
+
+async function makeRoute(name) {
+    const prefs = utils.prefs();
+    name = name.replace(/[-_]?route$/i, '');
+    const filepath = await utils.writeModule(
+        prefs,
+        name,
+        prefs.paths.routes,
+        'templates/route.ts.typo',
+        {}
+    );
+    console.log(`created file at ${chalk.blue(filepath)}`);
+}
+
+async function makeService(name) {
+    const prefs = utils.prefs();
+    name = name.replace(/[-_]?service$/i, '');
+    const filepath = await utils.writeModule(
+        prefs,
+        name,
+        prefs.paths.services,
+        'templates/service.ts.typo',
+        {}
+    );
+    console.log(`created file at ${chalk.blue(filepath)}`);
+}
+
+async function makeTest(name) {
+    const prefs = utils.prefs();
+    name = name.replace(/[-_]?test$/i, '');
+    const filepath = await utils.writeModule(
+        prefs,
+        name,
+        prefs.paths.tests,
+        'templates/test.ts.typo',
+        {},
+        'spec'
+    );
+    console.log(`created file at ${chalk.blue(filepath)}`);
 }

@@ -1,0 +1,16 @@
+import config from 'kuconfig'
+import { Service, Contract } from 'typolar/service'
+
+export class <%name|pascalcase%>Service extends Service<Contract> {
+    /**
+        * Get <%name|spacecase%> by id
+        *
+        * @param id <%name|spacecase%> id
+        */
+    get<%name|pascalcase%>(id: number) {
+        // TODO: handle service request
+        return this._get('/<%name|pathcase%>/api/path', { id })
+    }
+}
+
+export default <%name|pascalcase%>Service.create(config.app.service) as <%name|pascalcase%>Service

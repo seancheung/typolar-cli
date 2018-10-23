@@ -1,0 +1,6 @@
+import { Model, injectable } from 'typolar/model'
+
+@injectable
+export default class <%name|pascalcase%> extends Model {
+    // TODO: define <%name|spacecase%> model
+}

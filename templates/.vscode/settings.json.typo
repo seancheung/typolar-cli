@@ -12,6 +12,7 @@
         "yarn.lock": true,
     #if tslint
         "tslint.json": true,
+        "${tests}/tslint.json": true,
     #end
     #if prettier
         ".prettierignore": true,

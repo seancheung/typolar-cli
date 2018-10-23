@@ -1,4 +1,7 @@
+class HandledError extends Error {}
+
 module.exports = {
+    HandledError,
     /**
      * Exec command in target directory
      *
@@ -74,7 +77,7 @@ module.exports = {
      *
      * @param {string} content file content
      * @param {string} filepath file path
-     * @returns {string}
+     * @returns {Promise<string>}
      */
     async format(content, filepath) {
         const prettier = require('prettier');
@@ -149,5 +152,52 @@ module.exports = {
         );
 
         return json ? JSON.parse(content) : content;
+    },
+
+    /**
+     * Get preferences
+     */
+    prefs() {
+        return this.read('.typolarrc', true);
+    },
+
+    /**
+     * Write a module
+     *
+     * @param {any} prefs preferences
+     * @param {string} name module name
+     * @param {string} dir target directory
+     * @param {string} src template filepath relative to this file
+     * @param {any} vars variables
+     * @param {string} [postfix] file name postfix
+     * @returns {Promise<string>}
+     */
+    async writeModule(prefs, name, dir, src, vars, postfix) {
+        const fs = require('fs');
+        const path = require('path');
+        const stringcase = require('stringcase');
+
+        let filename = stringcase[prefs.convention](name);
+        if (postfix) {
+            filename += `.${postfix}`;
+        }
+        filename += '.ts';
+
+        dir = path.resolve(process.cwd(), dir);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+
+        const filepath = path.join(dir, filename);
+        if (fs.existsSync(filepath)) {
+            throw new HandledError(`file ${filepath} already exists`);
+        }
+
+        let content = this.load(src);
+        content = this.parse(content, Object.assign({ name }, stringcase, vars));
+        content = await this.format(content, filepath);
+        this.write(filepath, content);
+
+        return filepath;
     }
 };
