@@ -4,11 +4,11 @@
         "$env": ["APP_HOST", "0.0.0.0"]
     },
     "port": {
-        "$env": ["APP_PORT", "0.0.0.0"]
+        "$env": ["APP_PORT", 80]
     },
     "router": {
         "style": {
-            "$env": "APP_ROUTER_STYLE"
+            "$env": ["APP_ROUTER_STYLE", "pathcase"]
         },
         "baseUrl": {
             "$env": ["APP_ROUTER_BASEURL", "/api"]
@@ -18,6 +18,8 @@
         }
     },
     "service": {
-        "baseUrl": "APP_SERVICE_BASEURL"
+        "baseUrl": {
+            "$env": "APP_SERVICE_BASEURL"
+        }
     }
 }

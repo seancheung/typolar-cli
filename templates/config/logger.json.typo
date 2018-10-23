@@ -24,7 +24,9 @@
     },
     "stack": {
         "pretty": {
-            "$true": "LOG_STACK_PRETTY"
+            "$true": {
+                "$env": ["LOG_STACK_PRETTY", true]
+            }
         }
     }
 }
