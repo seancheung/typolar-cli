@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+#if tslint
+        "eg2.tslint",
+#end
+#if prettier
+        "esbenp.prettier-vscode",
+#end
+        "hbenl.vscode-mocha-test-adapter",
+        "mrmlnc.vscode-apache",
+        "christian-kohler.path-intellisense",
+        "CoenraadS.bracket-pair-colorizer",
+        "eamodio.gitlens",
+        "robertohuertasm.vscode-icons",
+        "alefragnani.bookmarks"
+    ]
+}

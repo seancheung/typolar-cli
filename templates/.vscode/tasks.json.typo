@@ -1,0 +1,242 @@
+{
+    "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "cmd.exe",
+                "args": ["/d", "/c"]
+            }
+        }
+    },
+    "tasks": [
+        {
+            "label": "run:dev",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "NODE_ENV": "development",
+                    "LOG_LEVEL": "debug"
+                }
+            },
+            "command": "${workspaceFolder}/node_modules/.bin/ts-node",
+            "args": ["--files", "${src}/index.ts"],
+            "problemMatcher": ["$tsc"]
+        },
+        {
+            "label": "run:watch",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "NODE_ENV": "development",
+                    "LOG_LEVEL": "debug",
+                    "TS_NODE_FILES": "true"
+                }
+            },
+            "command": "${workspaceFolder}/node_modules/.bin/nodemon",
+            "args": [
+                "-w",
+                "${src}",
+                "-w",
+                "${config}",
+                "-e",
+                "ts,json",
+                "-x",
+                "ts-node",
+                "${src}/index.ts"
+            ],
+            "problemMatcher": ["$tsc"],
+            "isBackground": true
+        },
+        {
+            "label": "build:lib",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "type": "shell",
+            "options": {
+                "env": {
+                    "NODE_ENV": "production"
+                }
+            },
+            "command": "${workspaceFolder}/node_modules/.bin/tsc",
+            "args": ["-p", "tsconfig.prod.json"],
+            "dependsOn": ["clean:build"],
+            "problemMatcher": ["$tsc"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true
+            }
+        },
+#if docs
+        {
+            "label": "build:docs",
+            "group": "build",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/typedoc",
+            "args": [
+                "--out",
+                "${docs}",
+                "--mode",
+                "modules",
+                "--name",
+                "${workspaceFolderBasename}",
+                "--hideGenerator",
+                "--excludeNotExported",
+                "--excludeExternals",
+                "--disableOutputCheck",
+                "--exclude",
+                "\"**/${src}/*.ts,**/${routes}/*.ts,**/${tests}/*\""
+            ],
+            "problemMatcher": [],
+            "dependsOn": ["clean:docs"]
+        },
+#end
+        {
+            "label": "test:all",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/_mocha",
+            "args": ["-r", "ts-node/register", "${tests}/**/*.spec.ts"],
+            "options": {
+                "env": {
+                    "NODE_ENV": "test",
+                    "LOG_LEVEL": "off",
+                    "TS_NODE_FILES": "true"
+                }
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "test:current",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/_mocha",
+            "args": ["-r", "ts-node/register", "${file}"],
+            "options": {
+                "env": {
+                    "NODE_ENV": "test",
+                    "LOG_LEVEL": "off",
+                    "TS_NODE_FILES": "true"
+                }
+            },
+            "group": "test",
+            "problemMatcher": []
+        },
+#if tslint
+        {
+            "label": "lint:all",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/tslint",
+            "args": [
+                "--outputAbsolutePaths",
+                "'${src}/**/*.ts'",
+                "'${tests}/**/*.ts'"
+            ],
+            "group": "test",
+            "problemMatcher": "$tslint5"
+        },
+#end
+#if prettier
+        {
+            "label": "format:all",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/prettier",
+            "args": [
+                "--write",
+                "\"{${src},${tests},${config}}/**/*.{json,ts,js}\""
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "format:dirty",
+            "type": "shell",
+            "command": "(git ls-files --modified && git ls-files --others --exclude-standard) | grep -E '\\.(json|ts|js)$' | xargs -I {} ${workspaceFolder}/node_modules/.bin/prettier --write {}",
+            "windows": {
+                "command": "for /f %i in ('git ls-files --modified ^&^& git ls-files --others --exclude-standard ^| find /v \"\" ^| findstr /irc:\"\\..*json$\" /c:\"\\..*ts$\" /c:\"\\..*js$\"') do \"${workspaceFolder}\\node_modules\\.bin\\prettier\" --write %i",
+                "options": {
+                    "shell": {
+                        "args": ["/q", "/d", "/c"]
+                    }
+                }
+            },
+            "problemMatcher": []
+        },
+#end
+#if docs
+        {
+            "label": "clean:docs",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/del-cli \"${docs}/**\" \"!${docs}\" \"!.gitignore\"",
+            "problemMatcher": []
+        },
+#end
+        {
+            "label": "clean:build",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/del-cli \"${build}/**\" \"!${build}\" \"!.gitignore\"",
+            "problemMatcher": []
+        },
+        {
+            "label": "hooks:install",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "SRC_FILE": "${workspaceFolder}/scripts/pre-commit.hook",
+                    "SYM_FILE": "${workspaceFolder}/.git/hooks/pre-commit"
+                }
+            },
+            "command": "test ! -f $SYM_FILE -a ! -L $SYM_FILE && cp $SRC_FILE $SYM_FILE && chmod +x $SYM_FILE && echo Hooks installed!",
+            "windows": {
+                "options": {
+                    "env": {
+                        "SRC_FILE": "${workspaceFolder}\\scripts\\pre-commit.hook",
+                        "SYM_FILE": "${workspaceFolder}\\.git\\hooks\\pre-commit"
+                    }
+                },
+                "command": "if not exist %SYM_FILE% copy %SRC_FILE% %SYM_FILE% >nul && echo Hooks installed!"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "hooks:uninstall",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "SYM_FILE": "${workspaceFolder}/.git/hooks/pre-commit"
+                }
+            },
+            "command": "test -f $SYM_FILE -o -L $SYM_FILE && rm $SYM_FILE && echo Hooks uninstalled!",
+            "windows": {
+                "options": {
+                    "env": {
+                        "SYM_FILE": "${workspaceFolder}\\.git\\hooks\\pre-commit"
+                    }
+                },
+                "command": "if exist %SYM_FILE% del %SYM_FILE% && echo Hooks uninstalled!"
+            },
+            "problemMatcher": []
+        }
+#if docs
+        ,{
+            "label": "view:docs",
+            "type": "shell",
+            "command": "open",
+            "args": ["${workspaceFolder}/${docs}/index.html"],
+            "windows": {
+                "command": "start",
+                "args": ["${workspaceFolder}\\${docs}\\index.html"]
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "never"
+            }
+        }
+#end
+    ]
+}

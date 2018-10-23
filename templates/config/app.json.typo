@@ -1,0 +1,23 @@
+{
+    "tag": "${name}",
+    "host": {
+        "$env": ["APP_HOST", "0.0.0.0"]
+    },
+    "port": {
+        "$env": ["APP_PORT", "0.0.0.0"]
+    },
+    "router": {
+        "style": {
+            "$env": "APP_ROUTER_STYLE"
+        },
+        "baseUrl": {
+            "$env": ["APP_ROUTER_BASEURL", "/api"]
+        },
+        "mock": {
+            "$env": "APP_ROUTER_MOCK"
+        }
+    },
+    "service": {
+        "baseUrl": "APP_SERVICE_BASEURL"
+    }
+}
