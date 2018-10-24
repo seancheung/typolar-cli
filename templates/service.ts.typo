@@ -1,4 +1,5 @@
-import { Service, Contract } from 'typolar/service'
+import { Service } from 'typolar'
+import { Contract } from 'typolar/types'
 
 export class <%name|pascalcase%>Service extends Service<Contract> {
     /**

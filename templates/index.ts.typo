@@ -1,3 +1,4 @@
-import app from 'typolar'
+import Application from 'typolar'
 
+const app = new Application()
 app.start()

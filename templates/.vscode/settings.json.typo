@@ -10,6 +10,7 @@
         ".vscode": true,
         "package-lock.json": true,
         "yarn.lock": true,
+        ".npmrc": true,
     #if tslint
         "tslint.json": true,
         "${tests}/tslint.json": true,
@@ -54,7 +55,7 @@
     "npm.autoDetect": "off",
     "mochaExplorer.nodePath": null,
     "mochaExplorer.require": "node_modules/ts-node/register",
-    "mochaExplorer.files": "${tests}**/*.spec.ts",
+    "mochaExplorer.files": "${tests}/**/*.spec.ts",
     "mochaExplorer.mochaPath": "node_modules/mocha",
     "mochaExplorer.env": {
         "NODE_ENV": "test",
