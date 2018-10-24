@@ -13,6 +13,7 @@ program
     .command('new <name>')
     .description('create a new app')
     .option('--template <type>', 'create from a template')
+    .option('--registry <taobao|url>', 'set project level npm registry')
     .option('--no-tslint', 'no tslint integration')
     .option('--no-prettier', 'no prettier integration')
     .option('--docs', 'add documentation generator')
@@ -59,6 +60,7 @@ program
 program
     .command('make:test <name>')
     .description('generate a test file')
+    .option('--http', 'import http test module')
     .action(setup)
     .action(wrap(scope))
     .action(wrap(makeTest));
@@ -273,6 +275,17 @@ function create(dir, options) {
             vars
         );
     }
+    if (options.registry) {
+        let npmreg = options.registry;
+        if (npmreg === 'taobao') {
+            npmreg = 'https://registry.npm.taobao.org';
+        }
+        utils.copy(
+            'templates/.npmrc.typo',
+            path.join(dir, '.npmrc'),
+            Object.assign({ npmreg }, vars)
+        );
+    }
 
     if (options.install) {
         if (options.update) {
@@ -344,7 +357,7 @@ async function makeService(name) {
     console.log(`created file at ${chalk.blue(filepath)}`);
 }
 
-async function makeTest(name) {
+async function makeTest(name, options) {
     const prefs = utils.prefs();
     name = name.replace(/[-_]?test$/i, '');
     const filepath = await utils.writeModule(
@@ -352,7 +365,7 @@ async function makeTest(name) {
         name,
         prefs.paths.tests,
         'templates/test.ts.typo',
-        {},
+        { http: options.http },
         'spec'
     );
     console.log(`created file at ${chalk.blue(filepath)}`);

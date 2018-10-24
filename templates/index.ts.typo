@@ -1,1 +1,3 @@
-import 'typolar/lib/server'
+import app from 'typolar'
+
+app.start()
