@@ -1,0 +1,14 @@
+#!/bin/sh
+
+WORK_DIR="$(git rev-parse --show-toplevel)"
+TSLINT="$WORK_DIR/node_modules/.bin/tslint"
+CODE=0
+for file in $(git diff --cached --name-only | grep -E '\.ts$')
+do
+    info=$(git show ":$file" | "$TSLINT" "$file")
+    if [ $? -ne 0 ]; then
+        echo "$info"
+        CODE=1
+    fi
+done
+exit $CODE

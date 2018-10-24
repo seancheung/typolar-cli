@@ -182,46 +182,6 @@
             "command": "${workspaceFolder}/node_modules/.bin/del-cli \"${build}/**\" \"!${build}\" \"!.gitignore\"",
             "problemMatcher": []
         },
-        {
-            "label": "hooks:install",
-            "type": "shell",
-            "options": {
-                "env": {
-                    "SRC_FILE": "${workspaceFolder}/scripts/pre-commit.hook",
-                    "SYM_FILE": "${workspaceFolder}/.git/hooks/pre-commit"
-                }
-            },
-            "command": "test ! -f $SYM_FILE -a ! -L $SYM_FILE && cp $SRC_FILE $SYM_FILE && chmod +x $SYM_FILE && echo Hooks installed!",
-            "windows": {
-                "options": {
-                    "env": {
-                        "SRC_FILE": "${workspaceFolder}\\scripts\\pre-commit.hook",
-                        "SYM_FILE": "${workspaceFolder}\\.git\\hooks\\pre-commit"
-                    }
-                },
-                "command": "if not exist %SYM_FILE% copy %SRC_FILE% %SYM_FILE% >nul && echo Hooks installed!"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "hooks:uninstall",
-            "type": "shell",
-            "options": {
-                "env": {
-                    "SYM_FILE": "${workspaceFolder}/.git/hooks/pre-commit"
-                }
-            },
-            "command": "test -f $SYM_FILE -o -L $SYM_FILE && rm $SYM_FILE && echo Hooks uninstalled!",
-            "windows": {
-                "options": {
-                    "env": {
-                        "SYM_FILE": "${workspaceFolder}\\.git\\hooks\\pre-commit"
-                    }
-                },
-                "command": "if exist %SYM_FILE% del %SYM_FILE% && echo Hooks uninstalled!"
-            },
-            "problemMatcher": []
-        }
 #if docs
         ,{
             "label": "view:docs",

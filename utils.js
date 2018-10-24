@@ -58,6 +58,18 @@ module.exports = {
     },
 
     /**
+     * set file mode
+     *
+     * @param {string} tar target file path relative to cwd
+     * @param {string} mode file mode
+     */
+    chmod(tar, mode) {
+        const fs = require('fs');
+        const path = require('path');
+        fs.chmodSync(path.resolve(process.cwd(), tar), mode);
+    },
+
+    /**
      * Write file
      *
      * @param {string} tar target file path relative to cwd

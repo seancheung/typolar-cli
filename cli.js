@@ -22,6 +22,7 @@ program
     .option('--no-update', 'skip npm update')
     .option('--no-init', 'skip git init')
     .option('--no-hide', 'do not hide config files in vscode')
+    .option('--no-hook', 'do not install pre-commit hook')
     .action(setup)
     .action(wrap(create));
 
@@ -247,6 +248,7 @@ function create(dir, options) {
             vars
         );
     }
+    // .vscode
     if (options.vscode) {
         const vscode = path.join(dir, '.vscode');
         fs.mkdirSync(vscode);
@@ -280,6 +282,11 @@ function create(dir, options) {
     }
     if (options.init) {
         utils.exec(dir, 'git', 'init');
+        if (options.tslint && options.hook) {
+            const hookfile = path.join(dir, '.git', 'hooks', 'pre-commit');
+            utils.copy('templates/pre-commit.typo', hookfile, vars);
+            utils.chmod(hookfile, '0755');
+        }
     }
 }
 
