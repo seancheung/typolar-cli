@@ -30,8 +30,6 @@
     "kuconfig": "^0.1.3",
     "prettier": "^1.14.3",
     "stringcase": "^4.3.0",
-    "tslint": "^5.11.0",
-    "typescript": "^3.1.3",
     "typolar-template": "^0.2.0"
   }
 }
