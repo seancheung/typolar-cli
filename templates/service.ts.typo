@@ -1,7 +1,6 @@
 import { Service } from 'typolar'
-import { Contract } from 'typolar/types'
 
-export class <%name|pascalcase%>Service extends Service<Contract> {
+export class <%name|pascalcase%>Service extends Service {
     /**
         * Get <%name|spacecase%> by id
         *

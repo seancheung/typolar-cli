@@ -8,24 +8,37 @@
     },
     "router": {
         "style": {
-            "$env": ["APP_ROUTER_STYLE", "pathcase"]
+            "$env": "APP_ROUTER_STYLE"
         },
         "baseUrl": {
-            "$env": ["APP_ROUTER_BASEURL", "/api"]
+            "$env": "APP_ROUTER_BASEURL"
         },
         "mock": {
             "$env": "APP_ROUTER_MOCK"
         },
-        "path": "${routes}"
+        "path": {
+            "$env": ["APP_ROUTER_PATH", "${routes}"]
+        }
     },
     "service": {
         "baseUrl": {
             "$env": "APP_SERVICE_BASEURL"
         },
-        "style": "pascalcase"
+        "transformer": {
+            "reviver": {
+                "$env": "APP_SERVICE_REVIVER"
+            },
+            "replacer": {
+                "$env": "APP_SERVICE_REPLACER"
+            }
+        }
     },
     "view": {
-        "engine": "ejs",
-        "path": "${views}"
+        "engine": {
+            "$env": ["APP_VIEW_ENGINE", "ejs"]
+        },
+        "path": {
+            "$env": ["APP_VIEW_PATH", "${views}"]
+        }
     }
 }

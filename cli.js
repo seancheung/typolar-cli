@@ -26,6 +26,7 @@ program
     .option('--no-init', 'skip git init')
     .option('--no-hook', 'do not add git hook')
     .option('--no-commit', 'skip auto initial commit')
+    .option('--clean', 'no example code')
     .action(setup)
     .action(wrap(create));
 
@@ -178,7 +179,6 @@ function create(dir, options) {
     // .gitignore
     utils.copy('templates/.gitignore.typo', path.join(dir, '.gitignore'), vars);
     // env
-    utils.copy('templates/.env.template.typo', path.join(dir, '.env'));
     utils.copy('templates/.env.template.typo', path.join(dir, '.env.template'));
     // config/app.json
     utils.copy('templates/config/app.json.typo', path.join(dir, dirs.config, 'app.json'), vars);
@@ -258,6 +258,33 @@ function create(dir, options) {
             utils.exec(dir, 'git', 'add', '-A');
             utils.exec(dir, 'git', 'commit', '-nqm', '"Initial commit"');
         }
+    }
+    if (options.clean) {
+        // .env
+        utils.copy('templates/example/.env.typo', path.join(dir, '.env'));
+    } else {
+        // example
+        utils.copy('templates/example/.env.typo', path.join(dir, '.env'));
+        utils.copy('templates/example/models/user.ts.typo', path.join(dir, dirs.models, 'user.ts'));
+        utils.copy(
+            'templates/example/models/address.ts.typo',
+            path.join(dir, dirs.models, 'address.ts')
+        );
+        utils.copy(
+            'templates/example/models/company.ts.typo',
+            path.join(dir, dirs.models, 'company.ts')
+        );
+        utils.copy('templates/example/routes/home.ts.typo', path.join(dir, dirs.routes, 'home.ts'));
+        utils.copy(
+            'templates/example/services/user.ts.typo',
+            path.join(dir, dirs.services, 'user.ts')
+        );
+        utils.copy('templates/example/views/home.ejs.typo', path.join(dir, dirs.views, 'home.ejs'));
+        console.log(
+            `go to direcotry ${chalk.blue(dir)}, run ${chalk.green(
+                'npm run dev'
+            )} and open your browser at ${chalk.yellow('http://localhost:9000/home')}`
+        );
     }
 }
 

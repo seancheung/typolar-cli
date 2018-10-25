@@ -1,0 +1,12 @@
+import { Controller, route } from 'typolar'
+import { Next, Request, Response } from 'typolar/types'
+import UserService from '../services/user'
+
+@route('home')
+export default class HomeController extends Controller {
+    @route('/')
+    async getHome(req: Request, res: Response, next: Next) {
+        const user = await UserService.getUser(1)
+        res.render('home', user)
+    }
+}
