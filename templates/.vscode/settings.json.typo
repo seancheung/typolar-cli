@@ -3,9 +3,13 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "files.exclude": {
+#if !hide
         "**/node_modules": true
-#if hide
-        ,".gitignore": true,
+#else
+        "**/node_modules": true,
+        ".gitignore": true,
+        ".gitattributes": true,
+        ".editorconfig": true,
         "tsconfig*.json": true,
         ".vscode": true,
         "package-lock.json": true,
@@ -18,6 +22,10 @@
     #if prettier
         ".prettierignore": true,
         ".prettierrc": true,
+    #end
+    #if eslint
+        ".eslintrc.json": true,
+        ".eslintignore": true,
     #end
         ".typolarrc": true
 #end
@@ -49,8 +57,10 @@
     "javascript.format.enable": false,
 #if tslint
     "tslint.autoFixOnSave": true,
-    "eslint.enable": false,
     "tslint.ignoreDefinitionFiles": false,
+#if !eslint
+    "eslint.enable": false,
+#end
 #end
     "npm.autoDetect": "off",
     "mochaExplorer.nodePath": null,

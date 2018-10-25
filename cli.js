@@ -12,18 +12,20 @@ program
 program
     .command('new <name>')
     .description('create a new app')
-    .option('--template <type>', 'create from a template')
+    // .option('--template <type>', 'create from a template')
     .option('--registry <taobao|url>', 'set project level npm registry')
     .option('--no-tslint', 'no tslint integration')
     .option('--no-prettier', 'no prettier integration')
+    .option('--eslint', 'add eslint integration')
     .option('--docs', 'add documentation generator')
     .option('--vscode', 'add vscode integration')
-    .option('--convention <type>', 'file name convention', 'spinalcase')
+    .option('--conv <camel|pascal|kebab>', 'file name convention', 'kebab')
     .option('--no-install', 'skip npm install')
     .option('--no-update', 'skip npm update')
-    .option('--no-init', 'skip git init')
     .option('--no-hide', 'do not hide config files in vscode')
-    .option('--no-hook', 'do not install pre-commit hook')
+    .option('--no-init', 'skip git init')
+    .option('--no-hook', 'do not add git hook')
+    .option('--no-commit', 'skip auto initial commit')
     .action(setup)
     .action(wrap(create));
 
@@ -74,9 +76,7 @@ if (
     !(program.args[program.args.length - 1] instanceof program.Command)
 ) {
     if (program.args.length > 0) {
-        console.error(
-            chalk.red('Unknown Command: ' + chalk.bold(program.args.join(' ')))
-        );
+        console.error(chalk.red('Unknown Command: ' + chalk.bold(program.args.join(' '))));
     }
     program.help();
 }
@@ -87,11 +87,7 @@ function setup() {
     }
     if (program.wrokdir) {
         process.chdir(program.wrokdir);
-        console.log(
-            chalk.yellow(
-                `workdir changed to ${chalk.bold(chalk.blue(process.cwd()))}`
-            )
-        );
+        console.log(chalk.yellow(`workdir changed to ${chalk.bold(chalk.blue(process.cwd()))}`));
     }
 
     process.on('uncaughtException', err => {
@@ -111,11 +107,7 @@ function env(options) {
     if (options.env) {
         process.env.NODE_ENV = options.env;
     }
-    console.log(
-        chalk.yellow(
-            `running in ${chalk.bold(chalk.blue(process.env.NODE_ENV))} mode`
-        )
-    );
+    console.log(chalk.yellow(`running in ${chalk.bold(chalk.blue(process.env.NODE_ENV))} mode`));
 }
 
 function scope() {
@@ -145,9 +137,7 @@ function create(dir, options) {
     const path = require('path');
     if (fs.existsSync(dir)) {
         if (fs.readdirSync(dir).length > 0) {
-            throw new utils.HandledError(
-                `directory ${chalk.yellow(dir)} is not empty`
-            );
+            throw new utils.HandledError(`directory ${chalk.yellow(dir)} is not empty`);
         }
     } else {
         fs.mkdirSync(dir);
@@ -156,7 +146,8 @@ function create(dir, options) {
         name: path.basename(dir),
         tslint: !!options.tslint,
         prettier: !!options.prettier,
-        convention: options.convention,
+        eslint: !!options.eslint,
+        convention: options.conv,
         docs: !!options.docs,
         hide: !!options.hide
     };
@@ -173,43 +164,24 @@ function create(dir, options) {
     if (options.docs) {
         Object.assign(dirs, { docs: 'docs' });
     }
-    utils.write(
-        path.join(dir, '.typolarrc'),
-        Object.assign({}, rc, { paths: dirs })
-    );
+    utils.write(path.join(dir, '.typolarrc'), Object.assign({}, rc, { paths: dirs }));
     for (const key in dirs) {
         fs.mkdirSync(path.join(dir, dirs[key]));
     }
     const vars = Object.assign({}, rc, dirs);
     // package.json
-    utils.copy(
-        'templates/package.json.typo',
-        path.join(dir, 'package.json'),
-        vars
-    );
+    utils.copy('templates/package.json.typo', path.join(dir, 'package.json'), vars);
     // tsconfig
-    utils.copy(
-        'templates/tsconfig.json.typo',
-        path.join(dir, 'tsconfig.json'),
-        vars
-    );
+    utils.copy('templates/tsconfig.json.typo', path.join(dir, 'tsconfig.json'), vars);
     // tsconfig.prod
-    utils.copy(
-        'templates/tsconfig.prod.json.typo',
-        path.join(dir, 'tsconfig.prod.json'),
-        vars
-    );
+    utils.copy('templates/tsconfig.prod.json.typo', path.join(dir, 'tsconfig.prod.json'), vars);
     // .gitignore
     utils.copy('templates/.gitignore.typo', path.join(dir, '.gitignore'), vars);
     // env
     utils.copy('templates/.env.template.typo', path.join(dir, '.env'));
     utils.copy('templates/.env.template.typo', path.join(dir, '.env.template'));
     // config/app.json
-    utils.copy(
-        'templates/config/app.json.typo',
-        path.join(dir, dirs.config, 'app.json'),
-        vars
-    );
+    utils.copy('templates/config/app.json.typo', path.join(dir, dirs.config, 'app.json'), vars);
     // config/logger.json
     utils.copy(
         'templates/config/logger.json.typo',
@@ -217,18 +189,10 @@ function create(dir, options) {
         vars
     );
     // index.ts
-    utils.copy(
-        'templates/index.ts.typo',
-        path.join(dir, dirs.src, 'index.ts'),
-        vars
-    );
+    utils.copy('templates/index.ts.typo', path.join(dir, dirs.src, 'index.ts'), vars);
     if (options.tslint) {
         // tslint.json
-        utils.copy(
-            'templates/tslint.json.typo',
-            path.join(dir, 'tslint.json'),
-            vars
-        );
+        utils.copy('templates/tslint.json.typo', path.join(dir, 'tslint.json'), vars);
         // tests/tslint.json
         utils.copy(
             'templates/tslint.tests.json.typo',
@@ -238,18 +202,18 @@ function create(dir, options) {
     }
     if (options.prettier) {
         // .prettierrc
-        utils.copy(
-            'templates/.prettierrc.typo',
-            path.join(dir, '.prettierrc'),
-            vars
-        );
+        utils.copy('templates/.prettierrc.typo', path.join(dir, '.prettierrc'), vars);
         // .prettierignore
-        utils.copy(
-            'templates/.prettierignore.typo',
-            path.join(dir, '.prettierignore'),
-            vars
-        );
+        utils.copy('templates/.prettierignore.typo', path.join(dir, '.prettierignore'), vars);
     }
+    if (options.eslint) {
+        // .eslintrc.json
+        utils.copy('templates/.eslintrc.json.typo', path.join(dir, '.eslintrc.json'), vars);
+        // .eslintignore
+        utils.copy('templates/.eslintignore.typo', path.join(dir, '.eslintignore'), vars);
+    }
+    // .editorconfig
+    utils.copy('templates/.editorconfig.typo', path.join(dir, '.editorconfig'), vars);
     // .vscode
     if (options.vscode) {
         const vscode = path.join(dir, '.vscode');
@@ -259,21 +223,9 @@ function create(dir, options) {
             path.join(vscode, 'extensions.json'),
             vars
         );
-        utils.copy(
-            'templates/.vscode/tasks.json.typo',
-            path.join(vscode, 'tasks.json'),
-            vars
-        );
-        utils.copy(
-            'templates/.vscode/settings.json.typo',
-            path.join(vscode, 'settings.json'),
-            vars
-        );
-        utils.copy(
-            'templates/.vscode/launch.json.typo',
-            path.join(vscode, 'launch.json'),
-            vars
-        );
+        utils.copy('templates/.vscode/tasks.json.typo', path.join(vscode, 'tasks.json'), vars);
+        utils.copy('templates/.vscode/settings.json.typo', path.join(vscode, 'settings.json'), vars);
+        utils.copy('templates/.vscode/launch.json.typo', path.join(vscode, 'launch.json'), vars);
     }
     if (options.registry) {
         let npmreg = options.registry;
@@ -295,33 +247,33 @@ function create(dir, options) {
     }
     if (options.init) {
         utils.exec(dir, 'git', 'init');
+        // .gitattributes
+        utils.copy('templates/.gitattributes.typo', path.join(dir, '.gitattributes'), vars);
         if (options.tslint && options.hook) {
             const hookfile = path.join(dir, '.git', 'hooks', 'pre-commit');
             utils.copy('templates/pre-commit.typo', hookfile, vars);
             utils.chmod(hookfile, '0755');
+        }
+        if (options.commit) {
+            utils.exec(dir, 'git', 'add', '-A');
+            utils.exec(dir, 'git', 'commit', '-nqm', '"Initial commit"');
         }
     }
 }
 
 function show() {
     const rc = utils.read('.typolarrc', true);
-    const config = require('kuconfig');
+    const config = utils.require('kuconfig');
     const util = require('util');
     delete config.__;
-    console.log(
-        chalk.blue('preference:\n'),
-        util.inspect(rc, false, null, true)
-    );
-    console.log(
-        chalk.blue('config:\n'),
-        util.inspect(config, false, null, true)
-    );
+    console.log(chalk.blue('preference:\n'), util.inspect(rc, false, null, true));
+    console.log(chalk.blue('config:\n'), util.inspect(config, false, null, true));
 }
 
 async function makeModel(name) {
     const prefs = utils.prefs();
     name = name.replace(/[-_]?model$/i, '');
-    const filepath = await utils.writeModule(
+    const filepath = await utils.compose(
         prefs,
         name,
         prefs.paths.models,
@@ -334,7 +286,7 @@ async function makeModel(name) {
 async function makeRoute(name) {
     const prefs = utils.prefs();
     name = name.replace(/[-_]?route$/i, '');
-    const filepath = await utils.writeModule(
+    const filepath = await utils.compose(
         prefs,
         name,
         prefs.paths.routes,
@@ -347,7 +299,7 @@ async function makeRoute(name) {
 async function makeService(name) {
     const prefs = utils.prefs();
     name = name.replace(/[-_]?service$/i, '');
-    const filepath = await utils.writeModule(
+    const filepath = await utils.compose(
         prefs,
         name,
         prefs.paths.services,
@@ -360,7 +312,7 @@ async function makeService(name) {
 async function makeTest(name, options) {
     const prefs = utils.prefs();
     name = name.replace(/[-_]?test$/i, '');
-    const filepath = await utils.writeModule(
+    const filepath = await utils.compose(
         prefs,
         name,
         prefs.paths.tests,

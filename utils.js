@@ -22,6 +22,19 @@ module.exports = {
     },
 
     /**
+     * Require module from working directory
+     *
+     * @param {string} id module id
+     */
+    require(id) {
+        const path = require('path');
+
+        return require(require.resolve(id, {
+            paths: [path.join(process.cwd(), 'node_modules')]
+        }));
+    },
+
+    /**
      * Load source file
      *
      * @param {string} src source file path relative to this file
@@ -50,10 +63,7 @@ module.exports = {
         } else {
             const fs = require('fs');
             const path = require('path');
-            fs.copyFileSync(
-                path.resolve(__dirname, src),
-                path.resolve(process.cwd(), tar)
-            );
+            fs.copyFileSync(path.resolve(__dirname, src), path.resolve(process.cwd(), tar));
         }
     },
 
@@ -81,7 +91,9 @@ module.exports = {
         if (typeof content !== 'string') {
             content = JSON.stringify(content, null, 2);
         }
-        fs.writeFileSync(path.resolve(process.cwd(), tar), content, { encoding: 'utf8' });
+        fs.writeFileSync(path.resolve(process.cwd(), tar), content, {
+            encoding: 'utf8'
+        });
     },
 
     /**
@@ -91,34 +103,52 @@ module.exports = {
      * @param {string} filepath file path
      * @returns {Promise<string>}
      */
-    async format(content, filepath) {
-        const prettier = require('prettier');
+    async prettier(content, filepath) {
+        const { resolveConfig, format } = this.require('prettier');
 
-        const options = await prettier.resolveConfig(process.cwd());
+        const options = await resolveConfig(process.cwd());
         options.filepath = filepath;
 
-        return prettier.format(content, options);
+        return format(content, options);
     },
 
     /**
-     * Lint file
+     * Lint file with tslint
      *
      * @param {string} content file content
      * @param {string} filepath file path
      * @returns {string}
      */
-    lint(content, filepath) {
+    tslint(content, filepath) {
         const path = require('path');
-        const tslint = require('tslint');
+        const { Linter, Configuration } = this.require('tslint');
 
-        const linter = new tslint.Linter({ fix: true });
-        const options = tslint.Configuration.findConfiguration(
+        const linter = new Linter({ fix: true });
+        const options = Configuration.findConfiguration(
             path.join(process.cwd(), 'tslint.json'),
             filepath
         ).results;
         linter.lint(filepath, content, options);
 
         return linter.applyFixes(filepath, content, linter.getResult().fixes);
+    },
+
+    /**
+     * Lint file with eslint
+     *
+     * @param {string} content file content
+     * @param {string} filepath file path
+     * @returns {string}
+     */
+    eslint(content, filepath) {
+        const { CLIEngine, Linter } = this.require('eslint');
+
+        const engine = new CLIEngine();
+        const config = engine.getConfigForFile(filepath);
+        const linter = new Linter();
+        const report = linter.verifyAndFix(content, config, filepath);
+
+        return report.output;
     },
 
     /**
@@ -158,12 +188,36 @@ module.exports = {
         const fs = require('fs');
         const path = require('path');
 
-        const content = fs.readFileSync(
-            path.resolve(process.cwd(), filepath),
-            'utf8'
-        );
+        const content = fs.readFileSync(path.resolve(process.cwd(), filepath), 'utf8');
 
         return json ? JSON.parse(content) : content;
+    },
+
+    /**
+     * Format convention type
+     *
+     * @param {string} type convention type
+     */
+    convention(type) {
+        switch (type) {
+        case 'camel':
+        case 'camelcase':
+        case 'camel-case':
+            return 'camelcase';
+        case 'pascal':
+        case 'pascalcase':
+        case 'pascal-case':
+            return 'pascalcase';
+        case 'kebab':
+        case 'spinal':
+        case 'kebabcase':
+        case 'spinalcase':
+        case 'kebab-case':
+        case 'spinal-case':
+            return 'spinalcase';
+        }
+
+        return type;
     },
 
     /**
@@ -184,12 +238,13 @@ module.exports = {
      * @param {string} [postfix] file name postfix
      * @returns {Promise<string>}
      */
-    async writeModule(prefs, name, dir, src, vars, postfix) {
+    async compose(prefs, name, dir, src, vars, postfix) {
         const fs = require('fs');
         const path = require('path');
         const stringcase = require('stringcase');
 
-        let filename = stringcase[prefs.convention](name);
+        const conv = this.convention(prefs.convention);
+        let filename = stringcase[conv](name);
         if (postfix) {
             filename += `.${postfix}`;
         }
@@ -207,7 +262,15 @@ module.exports = {
 
         let content = this.load(src);
         content = this.parse(content, Object.assign({ name }, stringcase, vars));
-        content = await this.format(content, filepath);
+        if (prefs.tslint) {
+            content = this.tslint(content, filepath);
+        }
+        if (prefs.eslint) {
+            content = this.eslint(content, filepath);
+        }
+        if (prefs.prettier) {
+            content = await this.prettier(content, filepath);
+        }
         this.write(filepath, content);
 
         return filepath;

@@ -1,19 +1,19 @@
 {
     "extends": [
         "tslint:recommended",
-        "tslint-consistent-codestyle"
 #if prettier
-        ,"tslint-config-prettier"
+        "tslint-config-prettier",
 #end
+        "tslint-consistent-codestyle"
     ],
     "defaultSeverity": "error",
     "linterOptions": {
         "exclude": [
             "node_modules/**/*",
-            "${build}/**/*"
 #if docs
-            ,"${docs}/**/*"
+            "${docs}/**/*",
 #end
+            "${build}/**/*"
         ]
     },
     "rules": {
@@ -24,20 +24,13 @@
         "no-invalid-this": true,
         "no-return-await": true,
         "promise-function-async": false,
-        "no-trailing-whitespace": true,
-        "no-consecutive-blank-lines": true,
-        "new-parens": true,
         "max-classes-per-file": false,
         "member-access": false,
         "object-literal-sort-keys": false,
         "interface-name": false,
-        "ordered-imports": true,
-        "no-var-requires": true,
-        "variable-name": false,
-        "only-arrow-functions": false,
         "unified-signatures": false,
         "forin": false,
-        "file-name-casing": [true, "kebab-case"],
+        "file-name-casing": [true, "${convention}-case"],
         "trailing-comma": [
             true,
             {

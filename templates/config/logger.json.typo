@@ -13,12 +13,12 @@
         "default": {
             "appenders": {
                 "$split": [
-                    {"$env": ["LOG_DEFAULT_APPENDERS", "console"]},
+                    {"$env": ["LOG_APPENDERS", "console"]},
                     ","
                 ]
             },
             "level": {
-                "$env": ["LOG_DEFAULT_LEVEL", "info"]
+                "$env": ["LOG_LEVEL", "info"]
             }
         }
     },
