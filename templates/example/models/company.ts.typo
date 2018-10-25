@@ -1,7 +1,7 @@
 import { Model } from 'typolar'
 
 /**
- * This is a non-injectable model which requires a manually props initialization
+ * This is a model which makes a manually props initialization
  */
 export default class Company extends Model {
     name: string

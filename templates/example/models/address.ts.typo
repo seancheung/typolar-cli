@@ -1,4 +1,4 @@
-import { injectable, Model } from 'typolar'
+import { Model } from 'typolar'
 
 interface Geo {
     lat: string
@@ -6,16 +6,12 @@ interface Geo {
 }
 
 /**
- * This is an injectable model which automatically handles props initialization
+ * This is a model which automatically handles props initialization
  */
-@injectable
-export default class Address extends Model {
-    /**
-     * To make a prop discoverable during initialization, assign it a null value
-     */
-    street: string = null
-    suite: string = null
-    city: string = null
-    zipcode: string = null
-    geo: Geo = null
+export default class Address extends Model<Address> {
+    street: string
+    suite: string
+    city: string
+    zipcode: string
+    geo: Geo
 }

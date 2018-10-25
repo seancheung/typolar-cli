@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "cross-env": "^5.2.0",
-        "typolar": "^0.7.0",
+        "typolar": "^0.8.0",
         "ejs": "^2.6.1"
     },
     "devDependencies": {
@@ -48,8 +48,10 @@
         "@types/express": "^4.16.0",
         "@types/request-promise": "^4.1.42",
         "@types/supertest": "^2.0.6",
+        "@types/sinon": "^5.0.5",
         "chai": "^4.2.0",
         "mocha": "^5.2.0",
+        "sinon": "^7.1.0",
         "supertest": "^3.3.0",
         "nodemon": "^1.18.4",
         "ts-node": "^7.0.1",

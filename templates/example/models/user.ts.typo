@@ -1,36 +1,23 @@
-import { inject, injectable, Model } from 'typolar'
+import { Model } from 'typolar'
 import Address from './address'
 import Company from './company'
 
 /**
- * This is an injectable model which automatically handles props initialization
+ * This is a model with both automatic props initialization and manual assignments
  */
-@injectable
-export default class User extends Model {
-    /**
-     * To make a prop discoverable during initialization, assign it a null value
-     */
-    id: number = null
-    name: string = null
-    username: string = null
-    email: string = null
-    website: string = null
-    /**
-     * This is an omitted props. It'll be ignored at initialization step
-     */
+export default class User extends Model<User> {
+    id: number
+    name: string
+    username: string
+    email: string
+    website: string
     phone: string
-    /**
-     * This is a nested injection
-     */
-    @inject(Address)
-    address: Address = null
-    /**
-     * This is another nested injection
-     */
-    @inject(Company)
-    company: Company = null
+    address: Address
+    company: Company
 
-    toJSON() {
-        return Object.assign({ address: this.address, company: this.company }, this)
+    constructor(data: Partial<User>) {
+        super(data)
+        this.address = new Address(data.address)
+        this.company = new Company(data.company)
     }
 }

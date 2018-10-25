@@ -280,6 +280,7 @@ function create(dir, options) {
             path.join(dir, dirs.services, 'user.ts')
         );
         utils.copy('templates/example/views/home.ejs.typo', path.join(dir, dirs.views, 'home.ejs'));
+        utils.copy('templates/example/tests/home.spec.ts.typo', path.join(dir, dirs.tests, 'home.spec.ts'));
         console.log(
             `go to direcotry ${chalk.blue(dir)}, run ${chalk.green(
                 'npm run dev'

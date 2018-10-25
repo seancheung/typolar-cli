@@ -11,7 +11,7 @@ export class UserService extends Service {
         // TODO: handle service request
         const data = await this._get<User>(`/users/${id}`)
         const user = new User(data)
-        this._logger.debug(user, user.address, user.company)
+        this._logger.debug(user)
         return user
     }
 }
