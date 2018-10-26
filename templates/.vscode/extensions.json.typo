@@ -3,6 +3,9 @@
 #if tslint
         "eg2.tslint",
 #end
+#if eslint
+        "dbaeumer.vscode-eslint",
+#end
 #if prettier
         "esbenp.prettier-vscode",
 #end
