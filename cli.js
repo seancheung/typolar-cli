@@ -332,7 +332,7 @@ async function makeModel(name) {
     const filepath = await utils.compose(
         prefs,
         name,
-        prefs.paths.models,
+        [prefs.paths.src, prefs.paths.models],
         'templates/model.ts.typo',
         {}
     );
@@ -345,7 +345,7 @@ async function makeRoute(name) {
     const filepath = await utils.compose(
         prefs,
         name,
-        prefs.paths.routes,
+        [prefs.paths.src, prefs.paths.routes],
         'templates/route.ts.typo',
         {}
     );
@@ -358,7 +358,7 @@ async function makeService(name) {
     const filepath = await utils.compose(
         prefs,
         name,
-        prefs.paths.services,
+        [prefs.paths.src, prefs.paths.services],
         'templates/service.ts.typo',
         {}
     );

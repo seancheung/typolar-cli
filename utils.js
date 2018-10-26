@@ -232,7 +232,7 @@ module.exports = {
      *
      * @param {any} prefs preferences
      * @param {string} name module name
-     * @param {string} dir target directory
+     * @param {string|string[]} dir target directory
      * @param {string} src template filepath relative to this file
      * @param {any} vars variables
      * @param {string} [postfix] file name postfix
@@ -250,6 +250,9 @@ module.exports = {
         }
         filename += '.ts';
 
+        if (Array.isArray(dir)) {
+            dir = dir.reduce((o, t) => path.join(o, t));
+        }
         dir = path.resolve(process.cwd(), dir);
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
