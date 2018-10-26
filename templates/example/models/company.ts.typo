@@ -1,0 +1,17 @@
+import { Model } from 'typolar'
+
+/**
+ * This is a model which makes a manually props initialization
+ */
+export default class Company extends Model {
+    name: string
+    catchPhrase: string
+    bs: string
+
+    constructor(data: Partial<Company>) {
+        super()
+        this.name = data.name
+        this.catchPhrase = data.catchPhrase
+        this.bs = data.bs
+    }
+}

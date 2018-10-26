@@ -1,0 +1,5 @@
+import { Model } from 'typolar'
+
+export default class <%name|pascalcase%> extends Model<<%name|pascalcase%>> {
+    // TODO: define <%name|spacecase%> model
+}

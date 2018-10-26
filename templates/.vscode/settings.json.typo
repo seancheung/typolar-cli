@@ -1,0 +1,79 @@
+{
+    "editor.wordWrap": "on",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "files.exclude": {
+#if !hide
+        "**/node_modules": true
+#else
+        "**/node_modules": true,
+        ".gitignore": true,
+        ".gitattributes": true,
+        ".editorconfig": true,
+        "tsconfig*.json": true,
+        ".vscode": true,
+        "package-lock.json": true,
+        "yarn.lock": true,
+        ".npmrc": true,
+    #if tslint
+        "tslint.json": true,
+        "${tests}/tslint.json": true,
+    #end
+    #if prettier
+        ".prettierignore": true,
+        ".prettierrc": true,
+    #end
+    #if eslint
+        ".eslintrc.json": true,
+        ".eslintignore": true,
+    #end
+        ".typolarrc": true
+#end
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+#if docs
+        "${docs}/**": true,
+#end
+        "${build}/**": true
+    },
+    "files.associations": {
+        "**/*.env": "apacheconf",
+        ".env.template": "apacheconf"
+    },
+    "files.encoding": "utf8",
+    "search.exclude": {
+#if docs
+        "${docs}": true,
+#end
+        "${build}": true
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "typescript.suggest.autoImports": false,
+    "typescript.tsc.autoDetect": "off",
+    "javascript.format.enable": false,
+#if tslint
+    "tslint.autoFixOnSave": true,
+    "tslint.ignoreDefinitionFiles": false,
+#if !eslint
+    "eslint.enable": false,
+#end
+#end
+    "npm.autoDetect": "off",
+    "mochaExplorer.nodePath": null,
+    "mochaExplorer.require": "node_modules/ts-node/register",
+    "mochaExplorer.files": "${tests}/**/*.spec.ts",
+    "mochaExplorer.mochaPath": "node_modules/mocha",
+    "mochaExplorer.env": {
+        "NODE_ENV": "test",
+        "LOG_LEVEL": "off",
+        "TS_NODE_FILES": "true"
+    },
+    "git.autofetch": true,
+    "debug.showInStatusBar": "always",
+    "workbench.statusBar.feedback.visible": false,
+    "workbench.iconTheme": "vscode-icons",
+    "vsicons.projectDetection.autoReload": true
+}

@@ -1,0 +1,32 @@
+{
+    "http": {
+        "style": {
+            "$env": ["LOG_HTTP_STYLE", "combined"]
+        }
+    },
+    "appenders": {
+        "console": {
+            "type": "console"
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": {
+                "$split": [
+                    {"$env": ["LOG_APPENDERS", "console"]},
+                    ","
+                ]
+            },
+            "level": {
+                "$env": ["LOG_LEVEL", "info"]
+            }
+        }
+    },
+    "stack": {
+        "pretty": {
+            "$true": {
+                "$env": ["LOG_STACK_PRETTY", true]
+            }
+        }
+    }
+}

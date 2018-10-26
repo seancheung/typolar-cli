@@ -1,0 +1,27 @@
+import { expect } from 'chai'
+#if http
+import request from 'supertest'
+import Application from 'typolar'
+#end
+
+describe('<%name|spacecase%> test', function () {
+    before(function () {
+        // OPTIONAL: setup
+#if http
+        this.app = new Application().express
+#end
+    })
+
+    it('test case description', async function () {
+        // TODO: test case
+#if http
+        await request(this.app)
+            .get('/api/v1/test')
+            .expect(200)
+#end
+    })
+
+    after(function () {
+        // OPTIONAL: teardown
+    })
+})

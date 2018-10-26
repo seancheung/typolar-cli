@@ -1,0 +1,51 @@
+import { expect } from 'chai'
+import sinon from 'sinon'
+import request from 'supertest'
+import app from '../${src}/app'
+import userService from '../${src}/${services}/user'
+
+describe('home test', function() {
+    before(function() {
+        this.login = sinon.stub(userService, '_send' as any)
+        this.login.callsFake(() => ({
+            body: {
+                id: 1,
+                name: 'Leanne Graham',
+                username: 'Bret',
+                email: 'Sincere@april.biz',
+                address: {
+                    street: 'Kulas Light',
+                    suite: 'Apt. 556',
+                    city: 'Gwenborough',
+                    zipcode: '92998-3874',
+                    geo: {
+                        lat: '-37.3159',
+                        lng: '81.1496'
+                    }
+                },
+                phone: '1-770-736-8031 x56442',
+                website: 'hildegard.org',
+                company: {
+                    name: 'Romaguera-Crona',
+                    catchPhrase: 'Multi-layered client-server neural-net',
+                    bs: 'harness real-time e-markets'
+                }
+            }
+        }))
+        this.app = app.express
+    })
+
+    it('test case description', async function() {
+        await request(this.app)
+            .get('/home')
+            .expect(200)
+            .expect('content-type', /html/)
+            .expect(res => {
+                expect(res.text).to.match(/Leanne Graham/)
+            })
+    })
+
+    after(function() {
+        this.login.reset()
+    })
+})

@@ -1,0 +1,17 @@
+import { Model } from 'typolar'
+
+interface Geo {
+    lat: string
+    lng: string
+}
+
+/**
+ * This is a model which automatically handles props initialization
+ */
+export default class Address extends Model<Address> {
+    street: string
+    suite: string
+    city: string
+    zipcode: string
+    geo: Geo
+}

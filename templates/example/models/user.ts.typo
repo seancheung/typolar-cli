@@ -1,0 +1,23 @@
+import { Model } from 'typolar'
+import Address from './address'
+import Company from './company'
+
+/**
+ * This is a model with both automatic props initialization and manual assignments
+ */
+export default class User extends Model<User> {
+    id: number
+    name: string
+    username: string
+    email: string
+    website: string
+    phone: string
+    address: Address
+    company: Company
+
+    constructor(data: Partial<User>) {
+        super(data)
+        this.address = new Address(data.address)
+        this.company = new Company(data.company)
+    }
+}

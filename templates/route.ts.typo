@@ -1,0 +1,18 @@
+import { Controller, guards, route } from 'typolar'
+import { Next, Request, Response } from 'typolar/types'
+
+@route('<%name|camelcase%>')
+export default class <%name|pascalcase%>Controller extends Controller {
+
+    @route('/:id', [guards.params({ id: '<%name|spacecase%> id' })])
+    get<%name|pascalcase%>(req: Request, res: Response, next: Next) {
+        // TODO: handle request
+        res.json({ id: req.params.id })
+    }
+
+    @route('/', 'post', [guards.fields({ name: '<%name|spacecase%> name' })])
+    create<%name|pascalcase%>(req: Request, res: Response, next: Next) {
+        // TODO: handle request
+        res.json({ name: req.body.name })
+    }
+}
