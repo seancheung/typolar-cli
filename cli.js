@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const utils = require('./utils');
 
 program
+    .name('typolar')
     .version('0.1.0')
     .option('-w, --wrokdir <dir>', 'change work directory')
     .option('--rc <filepath>', 'set typolarrc filepath')
@@ -153,39 +154,43 @@ function create(dir, options) {
         hide: !!options.hide
     };
     const entry = 'src';
-    const dirs = {
-        src: entry,
-        models: path.join(entry, 'models'),
-        routes: path.join(entry, 'routes'),
-        services: path.join(entry, 'services'),
-        config: 'config',
-        views: 'views',
-        tests: 'tests',
-        build: 'lib'
+    const modules = {
+        models: 'models',
+        routes: 'routes',
+        services: 'services'
     };
+    const dirs = Object.assign(
+        {
+            src: entry,
+            config: 'config',
+            views: 'views',
+            tests: 'tests',
+            build: 'lib'
+        },
+        modules
+    );
     if (options.docs) {
         Object.assign(dirs, { docs: 'docs' });
     }
     utils.write(path.join(dir, '.typolarrc'), Object.assign({}, rc, { paths: dirs }));
     for (const key in dirs) {
-        fs.mkdirSync(path.join(dir, dirs[key]));
+        if (key in modules) {
+            fs.mkdirSync(path.join(dir, entry, dirs[key]));
+        } else {
+            fs.mkdirSync(path.join(dir, dirs[key]));
+        }
     }
     const vars = Object.assign({}, rc, dirs);
     // package.json
-    utils.copy(
-        'templates/package.json.typo',
-        path.join(dir, 'package.json'),
-        Object.assign(
-            { build_routes: path.posix.join(dirs.build, path.relative(dirs.src, dirs.routes)) },
-            vars
-        )
-    );
+    utils.copy('templates/package.json.typo', path.join(dir, 'package.json'), vars);
     // tsconfig
     utils.copy('templates/tsconfig.json.typo', path.join(dir, 'tsconfig.json'), vars);
     // tsconfig.prod
     utils.copy('templates/tsconfig.prod.json.typo', path.join(dir, 'tsconfig.prod.json'), vars);
     // .gitignore
     utils.copy('templates/.gitignore.typo', path.join(dir, '.gitignore'), vars);
+    // .gitattributes
+    utils.copy('templates/.gitattributes.typo', path.join(dir, '.gitattributes'), vars);
     // env
     utils.copy('templates/.env.template.typo', path.join(dir, '.env.template'));
     // config/app.json
@@ -198,6 +203,8 @@ function create(dir, options) {
     );
     // index.ts
     utils.copy('templates/index.ts.typo', path.join(dir, dirs.src, 'index.ts'), vars);
+    // app.ts
+    utils.copy('templates/app.ts.typo', path.join(dir, dirs.src, 'app.ts'), vars);
     if (options.tslint) {
         // tslint.json
         utils.copy('templates/tslint.json.typo', path.join(dir, 'tslint.json'), vars);
@@ -255,8 +262,6 @@ function create(dir, options) {
     }
     if (options.init) {
         utils.exec(dir, 'git', 'init');
-        // .gitattributes
-        utils.copy('templates/.gitattributes.typo', path.join(dir, '.gitattributes'), vars);
         if (options.tslint && options.hook) {
             const hookfile = path.join(dir, '.git', 'hooks', 'pre-commit');
             utils.copy('templates/pre-commit.typo', hookfile, vars);
@@ -273,24 +278,36 @@ function create(dir, options) {
     } else {
         // example
         utils.copy('templates/example/.env.typo', path.join(dir, '.env'));
-        utils.copy('templates/example/models/user.ts.typo', path.join(dir, dirs.models, 'user.ts'));
+        utils.copy(
+            'templates/example/models/user.ts.typo',
+            path.join(dir, dirs.models, 'user.ts'),
+            vars
+        );
         utils.copy(
             'templates/example/models/address.ts.typo',
-            path.join(dir, dirs.models, 'address.ts')
+            path.join(dir, dirs.models, 'address.ts'),
+            vars
         );
         utils.copy(
             'templates/example/models/company.ts.typo',
-            path.join(dir, dirs.models, 'company.ts')
+            path.join(dir, dirs.models, 'company.ts'),
+            vars
         );
-        utils.copy('templates/example/routes/home.ts.typo', path.join(dir, dirs.routes, 'home.ts'));
+        utils.copy(
+            'templates/example/routes/home.ts.typo',
+            path.join(dir, dirs.routes, 'home.ts'),
+            vars
+        );
         utils.copy(
             'templates/example/services/user.ts.typo',
-            path.join(dir, dirs.services, 'user.ts')
+            path.join(dir, dirs.services, 'user.ts'),
+            vars
         );
         utils.copy('templates/example/views/home.ejs.typo', path.join(dir, dirs.views, 'home.ejs'));
         utils.copy(
             'templates/example/tests/home.spec.ts.typo',
-            path.join(dir, dirs.tests, 'home.spec.ts')
+            path.join(dir, dirs.tests, 'home.spec.ts'),
+            vars
         );
         console.log(
             `go to direcotry ${chalk.blue(dir)}, run ${chalk.green(

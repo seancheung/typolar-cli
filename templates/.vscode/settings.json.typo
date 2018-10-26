@@ -44,7 +44,6 @@
         ".env.template": "apacheconf"
     },
     "files.encoding": "utf8",
-    "files.eol": "\n",
     "search.exclude": {
 #if docs
         "${docs}": true,

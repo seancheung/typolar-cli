@@ -1,6 +1,6 @@
 import { Controller, route } from 'typolar'
 import { Next, Request, Response } from 'typolar/types'
-import UserService from '../services/user'
+import UserService from '../${services}/user'
 
 @route('home')
 export default class HomeController extends Controller {

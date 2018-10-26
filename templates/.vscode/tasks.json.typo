@@ -89,7 +89,7 @@
                 "--excludeExternals",
                 "--disableOutputCheck",
                 "--exclude",
-                "\"**/${src}/*.ts,**/${routes}/*.ts,**/${tests}/*\""
+                "\"**/${src}/*.ts,**/${src}/${routes}/*.ts,**/${tests}/*\""
             ],
             "problemMatcher": [],
             "dependsOn": ["clean:docs"]

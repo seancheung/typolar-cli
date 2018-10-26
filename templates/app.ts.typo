@@ -1,0 +1,5 @@
+import Application from 'typolar'
+
+const app = new Application(__dirname)
+
+export default app

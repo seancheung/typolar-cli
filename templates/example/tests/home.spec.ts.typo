@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import sinon from 'sinon'
 import request from 'supertest'
-import Application from 'typolar'
-import userService from '../src/services/user'
+import app from '../${src}/app'
+import userService from '../${src}/${services}/user'
 
 describe('home test', function() {
     before(function() {
@@ -32,7 +32,7 @@ describe('home test', function() {
                 }
             }
         }))
-        this.app = new Application().express
+        this.app = app.express
     })
 
     it('test case description', async function() {

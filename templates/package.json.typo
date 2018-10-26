@@ -5,7 +5,7 @@
         "dev": "cross-env NODE_ENV=development LOG_LEVEL=debug ts-node --files ${src}/index.ts",
         "watch": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon -w ${src} -w ${config} -e ts,json -x 'ts-node --files' ${src}/index.ts",
 #if docs
-        "docs": "typedoc --out \"${docs}\" --mode modules --name ${name} --hideGenerator --excludeNotExported --excludeExternals --disableOutputCheck --exclude \"**/${src}/*.ts,**/${routes}/*.ts,**/${tests}/*\"",
+        "docs": "typedoc --out \"${docs}\" --mode modules --name ${name} --hideGenerator --excludeNotExported --excludeExternals --disableOutputCheck --exclude \"**/${src}/*.ts,**/${src}/${routes}/*.ts,**/${tests}/*\"",
 #end
         "test": "cross-env NODE_ENV=test LOG_LEVEL=off TS_NODE_FILES=true mocha -r ts-node/register '${tests}/**/*.spec.ts'",
 #if prettier
@@ -17,11 +17,11 @@
 #end
         "prebuild": "del-cli \"${build}/**\" \"!${build}\" \"!.gitignore\"",
         "build": "cross-env NODE_ENV=production tsc -p tsconfig.prod.json",
-        "start": "cross-env NODE_ENV=production APP_ROUTER_PATH=\"${build_routes}\" node ${build}/index.js"
+        "start": "cross-env NODE_ENV=production node ${build}/index.js"
     },
     "dependencies": {
         "cross-env": "^5.2.0",
-        "typolar": "^0.8.0",
+        "typolar": "^0.9.0",
         "ejs": "^2.6.1"
     },
     "devDependencies": {
