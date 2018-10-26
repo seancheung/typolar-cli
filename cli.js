@@ -152,11 +152,12 @@ function create(dir, options) {
         docs: !!options.docs,
         hide: !!options.hide
     };
+    const entry = 'src';
     const dirs = {
-        src: 'src',
-        models: 'src/models',
-        routes: 'src/routes',
-        services: 'src/services',
+        src: entry,
+        models: path.join(entry, 'models'),
+        routes: path.join(entry, 'routes'),
+        services: path.join(entry, 'services'),
         config: 'config',
         views: 'views',
         tests: 'tests',
@@ -171,7 +172,14 @@ function create(dir, options) {
     }
     const vars = Object.assign({}, rc, dirs);
     // package.json
-    utils.copy('templates/package.json.typo', path.join(dir, 'package.json'), vars);
+    utils.copy(
+        'templates/package.json.typo',
+        path.join(dir, 'package.json'),
+        Object.assign(
+            { build_routes: path.posix.join(dirs.build, path.relative(dirs.src, dirs.routes)) },
+            vars
+        )
+    );
     // tsconfig
     utils.copy('templates/tsconfig.json.typo', path.join(dir, 'tsconfig.json'), vars);
     // tsconfig.prod
@@ -280,7 +288,10 @@ function create(dir, options) {
             path.join(dir, dirs.services, 'user.ts')
         );
         utils.copy('templates/example/views/home.ejs.typo', path.join(dir, dirs.views, 'home.ejs'));
-        utils.copy('templates/example/tests/home.spec.ts.typo', path.join(dir, dirs.tests, 'home.spec.ts'));
+        utils.copy(
+            'templates/example/tests/home.spec.ts.typo',
+            path.join(dir, dirs.tests, 'home.spec.ts')
+        );
         console.log(
             `go to direcotry ${chalk.blue(dir)}, run ${chalk.green(
                 'npm run dev'

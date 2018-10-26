@@ -17,7 +17,7 @@
 #end
         "prebuild": "del-cli \"${build}/**\" \"!${build}\" \"!.gitignore\"",
         "build": "cross-env NODE_ENV=production tsc -p tsconfig.prod.json",
-        "start": "cross-env NODE_ENV=production node ${build}/index.js"
+        "start": "cross-env NODE_ENV=production APP_ROUTER_PATH=\"${build_routes}\" node ${build}/index.js"
     },
     "dependencies": {
         "cross-env": "^5.2.0",
