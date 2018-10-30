@@ -5,7 +5,7 @@ const utils = require('./utils');
 
 program
     .name('typolar')
-    .version('0.1.0')
+    .version('0.2.1')
     .option('-w, --wrokdir <dir>', 'change work directory')
     .option('--rc <filepath>', 'set typolarrc filepath')
     .option('-v, --verbose', 'enable verbose output');
@@ -202,9 +202,9 @@ function create(dir, options) {
         vars
     );
     // index.ts
-    utils.copy('templates/index.ts.typo', path.join(dir, dirs.src, 'index.ts'), vars);
+    utils.copy('templates/index.ts.typo', path.join(dir, entry, 'index.ts'), vars);
     // app.ts
-    utils.copy('templates/app.ts.typo', path.join(dir, dirs.src, 'app.ts'), vars);
+    utils.copy('templates/app.ts.typo', path.join(dir, entry, 'app.ts'), vars);
     if (options.tslint) {
         // tslint.json
         utils.copy('templates/tslint.json.typo', path.join(dir, 'tslint.json'), vars);
@@ -280,27 +280,27 @@ function create(dir, options) {
         utils.copy('templates/example/.env.typo', path.join(dir, '.env'));
         utils.copy(
             'templates/example/models/user.ts.typo',
-            path.join(dir, dirs.models, 'user.ts'),
+            path.join(dir, entry, dirs.models, 'user.ts'),
             vars
         );
         utils.copy(
             'templates/example/models/address.ts.typo',
-            path.join(dir, dirs.models, 'address.ts'),
+            path.join(dir, entry, dirs.models, 'address.ts'),
             vars
         );
         utils.copy(
             'templates/example/models/company.ts.typo',
-            path.join(dir, dirs.models, 'company.ts'),
+            path.join(dir, entry, dirs.models, 'company.ts'),
             vars
         );
         utils.copy(
             'templates/example/routes/home.ts.typo',
-            path.join(dir, dirs.routes, 'home.ts'),
+            path.join(dir, entry, dirs.routes, 'home.ts'),
             vars
         );
         utils.copy(
             'templates/example/services/user.ts.typo',
-            path.join(dir, dirs.services, 'user.ts'),
+            path.join(dir, entry, dirs.services, 'user.ts'),
             vars
         );
         utils.copy('templates/example/views/home.ejs.typo', path.join(dir, dirs.views, 'home.ejs'));
