@@ -1,0 +1,12 @@
+import { Model } from 'typolar'
+
+/**
+ * This is a model which automatically handles props initialization
+ */
+export default class Comment extends Model<Comment> {
+    id: number
+    postId: number
+    name: string
+    email: string
+    body: string
+}

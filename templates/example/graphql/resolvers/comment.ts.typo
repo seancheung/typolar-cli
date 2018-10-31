@@ -1,0 +1,8 @@
+import Comment from '../../models/comment'
+import BlogService from '../../services/blog'
+
+export default {
+    Comment: {
+        post: (comment: Comment) => BlogService.getPost(comment.postId)
+    }
+}

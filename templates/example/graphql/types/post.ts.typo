@@ -1,0 +1,9 @@
+export default `
+  type Post {
+    id: Int!
+    user: User
+    title: String
+    body: String
+    comments: [Comment]
+  }
+`

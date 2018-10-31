@@ -1,0 +1,12 @@
+import { Request } from 'typolar/types'
+import Post from '../../models/post'
+import User from '../../models/user'
+import BlogService from '../../services/blog'
+
+export default {
+    Query: {
+        posts: () => BlogService.getPosts(),
+        post: (obj: any, { id }: Post, ctx: Request, info: any) => BlogService.getPost(id),
+        user: (obj: any, { id }: User, ctx: Request, info: any) => BlogService.getUser(id)
+    }
+}

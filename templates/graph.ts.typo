@@ -1,0 +1,5 @@
+export default `
+  type <%name|pascalcase%> {
+    # TODO: define <%name|spacecase%> type
+  }
+`

@@ -1,0 +1,64 @@
+import { Service } from 'typolar'
+import Comment from '../models/comment'
+import Post from '../models/post'
+import User from '../models/user'
+
+export class BlogService extends Service {
+    /**
+     * Get user by id
+     *
+     * @param id user id
+     */
+    async getUser(id: number): Promise<User> {
+        const data = await this._get<User>(`/users/${id}`)
+        const user = new User(data)
+        this._logger.debug(user)
+        return user
+    }
+
+    /**
+     * Get post by id
+     *
+     * @param id post id
+     */
+    async getPost(id: number): Promise<Post> {
+        const data = await this._get<Post>(`/posts/${id}`)
+        const post = new Post(data)
+        this._logger.debug(post)
+        return post
+    }
+
+    /**
+     * Find posts by user id
+     *
+     * @param userId user id
+     */
+    async findPosts(userId: number): Promise<Post[]> {
+        const array = await this._get<Post[]>(`/posts`, { userId })
+        const posts = array.map(data => new Post(data))
+        return posts
+    }
+
+    /**
+     * Get all posts
+     *
+     */
+    async getPosts(): Promise<Post[]> {
+        const array = await this._get<Post[]>(`/posts`)
+        const posts = array.map(data => new Post(data))
+        return posts
+    }
+
+    /**
+     * Find comments by post id
+     *
+     * @param postId post id
+     */
+    async findComments(postId: number): Promise<Comment[]> {
+        const array = await this._get<Comment[]>(`/comments`, { postId })
+        const comments = array.map(data => new Comment(data))
+        return comments
+    }
+}
+
+export default BlogService.create() as BlogService

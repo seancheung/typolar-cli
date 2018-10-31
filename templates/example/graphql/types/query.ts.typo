@@ -1,0 +1,7 @@
+export default `
+  type Query {
+    posts: [Post]
+    post(id: Int!): Post
+    user(id: Int!): User
+  }
+`

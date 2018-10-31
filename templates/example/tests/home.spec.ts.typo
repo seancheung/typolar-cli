@@ -2,11 +2,11 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import request from 'supertest'
 import app from '../${src}/app'
-import userService from '../${src}/${services}/user'
+import BlogService from '../${src}/${services}/blog'
 
 describe('home test', function() {
     before(function() {
-        this.login = sinon.stub(userService, '_send' as any)
+        this.login = sinon.stub(BlogService, '_send' as any)
         this.login.callsFake(() => ({
             body: {
                 id: 1,
