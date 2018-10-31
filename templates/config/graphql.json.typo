@@ -1,0 +1,10 @@
+{
+    "types": "${graphqlTypes}",
+    "resolvers": "${graphqlResolvers}",
+    "baseUrl": "/graphql",
+    "graphiql": {
+        "$true": {
+            "$env": "GRAPHQL_UI"
+        }
+    }
+}

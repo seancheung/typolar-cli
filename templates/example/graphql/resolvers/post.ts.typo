@@ -1,0 +1,9 @@
+import Post from '../../models/post'
+import BlogService from '../../services/blog'
+
+export default {
+    Post: {
+        user: (post: Post) => BlogService.getUser(post.userId),
+        comments: (post: Post) => BlogService.findComments(post.id)
+    }
+}

@@ -1,0 +1,9 @@
+export default `
+  type Comment {
+    id: Int!
+    name: String
+    body: String
+    email: String
+    post: Post
+  }
+`

@@ -89,7 +89,11 @@
                 "--excludeExternals",
                 "--disableOutputCheck",
                 "--exclude",
+    #if graphql
+                "\"**/${src}/*.ts,**/${src}/${routes}/*.ts,**/${src}/${graphql}/**,**/${tests}/**\""
+    # else
                 "\"**/${src}/*.ts,**/${src}/${routes}/*.ts,**/${tests}/*\""
+    #end
             ],
             "problemMatcher": [],
             "dependsOn": ["clean:docs"]
@@ -183,7 +187,7 @@
             "problemMatcher": []
         },
 #if docs
-        ,{
+        {
             "label": "view:docs",
             "type": "shell",
             "command": "open",

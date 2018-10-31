@@ -18,6 +18,7 @@ program
     .option('--no-tslint', 'no tslint integration')
     .option('--no-prettier', 'no prettier integration')
     .option('--eslint', 'add eslint integration')
+    .option('--graphql', 'add graphql integration')
     .option('--docs', 'add documentation generator')
     .option('--vscode', 'add vscode integration')
     .option('--conv <camel|pascal|kebab>', 'file name convention', 'kebab')
@@ -68,6 +69,20 @@ program
     .action(setup)
     .action(wrap(scope))
     .action(wrap(makeTest));
+
+program
+    .command('make:graph <name>')
+    .description('generate a graphql type file')
+    .action(setup)
+    .action(wrap(scope))
+    .action(wrap(makeGraph));
+
+program
+    .command('make:resolver <name>')
+    .description('generate a graphql resolver file')
+    .action(setup)
+    .action(wrap(scope))
+    .action(wrap(makeResolver));
 
 const commands = program.commands.map(cmd => cmd._name);
 
@@ -151,7 +166,8 @@ function create(dir, options) {
         eslint: !!options.eslint,
         convention: options.conv,
         docs: !!options.docs,
-        hide: !!options.hide
+        hide: !!options.hide,
+        graphql: !!options.graphql
     };
     const entry = 'src';
     const modules = {
@@ -159,6 +175,13 @@ function create(dir, options) {
         routes: 'routes',
         services: 'services'
     };
+    if (options.graphql) {
+        Object.assign(modules, {
+            graphql: 'graphql',
+            graphqlTypes: 'graphql/types',
+            graphqlResolvers: 'graphql/resolvers'
+        });
+    }
     const dirs = Object.assign(
         {
             src: entry,
@@ -201,6 +224,14 @@ function create(dir, options) {
         path.join(dir, dirs.config, 'logger.json'),
         vars
     );
+    if (options.graphql) {
+        // config/graphql.json
+        utils.copy(
+            'templates/config/graphql.json.typo',
+            path.join(dir, dirs.config, 'graphql.json'),
+            vars
+        );
+    }
     // index.ts
     utils.copy('templates/index.ts.typo', path.join(dir, entry, 'index.ts'), vars);
     // app.ts
@@ -294,13 +325,23 @@ function create(dir, options) {
             vars
         );
         utils.copy(
+            'templates/example/models/comment.ts.typo',
+            path.join(dir, entry, dirs.models, 'comment.ts'),
+            vars
+        );
+        utils.copy(
+            'templates/example/models/post.ts.typo',
+            path.join(dir, entry, dirs.models, 'post.ts'),
+            vars
+        );
+        utils.copy(
             'templates/example/routes/home.ts.typo',
             path.join(dir, entry, dirs.routes, 'home.ts'),
             vars
         );
         utils.copy(
-            'templates/example/services/user.ts.typo',
-            path.join(dir, entry, dirs.services, 'user.ts'),
+            'templates/example/services/blog.ts.typo',
+            path.join(dir, entry, dirs.services, 'blog.ts'),
             vars
         );
         utils.copy('templates/example/views/home.ejs.typo', path.join(dir, dirs.views, 'home.ejs'));
@@ -309,11 +350,65 @@ function create(dir, options) {
             path.join(dir, dirs.tests, 'home.spec.ts'),
             vars
         );
+        if (options.graphql) {
+            utils.copy(
+                'templates/example/graphql/types/comment.ts.typo',
+                path.join(dir, entry, dirs.graphqlTypes, 'comment.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/types/post.ts.typo',
+                path.join(dir, entry, dirs.graphqlTypes, 'post.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/types/query.ts.typo',
+                path.join(dir, entry, dirs.graphqlTypes, 'query.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/types/schema.ts.typo',
+                path.join(dir, entry, dirs.graphqlTypes, 'schema.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/types/user.ts.typo',
+                path.join(dir, entry, dirs.graphqlTypes, 'user.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/resolvers/comment.ts.typo',
+                path.join(dir, entry, dirs.graphqlResolvers, 'comment.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/resolvers/post.ts.typo',
+                path.join(dir, entry, dirs.graphqlResolvers, 'post.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/resolvers/query.ts.typo',
+                path.join(dir, entry, dirs.graphqlResolvers, 'query.ts'),
+                vars
+            );
+            utils.copy(
+                'templates/example/graphql/resolvers/user.ts.typo',
+                path.join(dir, entry, dirs.graphqlResolvers, 'user.ts'),
+                vars
+            );
+        }
         console.log(
             `go to direcotry ${chalk.blue(dir)}, run ${chalk.green(
                 'npm run dev'
             )} and open your browser at ${chalk.yellow('http://localhost:9000/home')}`
         );
+        if (options.graphql) {
+            console.log(
+                `to explore graphql, open your browser at ${chalk.yellow(
+                    'http://localhost:9000/graphql'
+                )}`
+            );
+        }
     }
 }
 
@@ -375,6 +470,32 @@ async function makeTest(name, options) {
         'templates/test.ts.typo',
         { http: options.http },
         'spec'
+    );
+    console.log(`created file at ${chalk.blue(filepath)}`);
+}
+
+async function makeGraph(name) {
+    const prefs = utils.prefs();
+    name = name.replace(/[-_]?graph$/i, '');
+    const filepath = await utils.compose(
+        prefs,
+        name,
+        [prefs.paths.src, prefs.paths.graphqlTypes],
+        'templates/graph.ts.typo',
+        {}
+    );
+    console.log(`created file at ${chalk.blue(filepath)}`);
+}
+
+async function makeResolver(name) {
+    const prefs = utils.prefs();
+    name = name.replace(/[-_]?resolver$/i, '');
+    const filepath = await utils.compose(
+        prefs,
+        name,
+        [prefs.paths.src, prefs.paths.graphqlResolvers],
+        'templates/resolver.ts.typo',
+        {}
     );
     console.log(`created file at ${chalk.blue(filepath)}`);
 }

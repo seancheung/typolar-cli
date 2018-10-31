@@ -1,0 +1,11 @@
+import { Model } from 'typolar'
+
+/**
+ * This is a model which automatically handles props initialization
+ */
+export default class Post extends Model<Post> {
+    id: number
+    userId: number
+    title: string
+    body: string
+}
