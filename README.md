@@ -33,6 +33,8 @@ Commands:
   make:route <name>           generate a route file
   make:service <name>         generate a service file
   make:test [options] <name>  generate a test file
+  make:graph <name>           generate a graphql type file
+  make:resolver <name>        generate a graphql resolver file
 ```
 
 Create a typolar project:
@@ -47,6 +49,7 @@ Options:
   --no-tslint                  no tslint integration
   --no-prettier                no prettier integration
   --eslint                     add eslint integration
+  --graphql                    add graphql integration
   --docs                       add documentation generator
   --vscode                     add vscode integration
   --conv <camel|pascal|kebab>  file name convention (default: "kebab")
@@ -63,7 +66,7 @@ Options:
 e.g.
 
 ```bash
-typolar new myapp --docs --vscode --eslint --registry=taobao --clean
+typolar new myapp --docs --vscode --eslint --graphql --registry=taobao --clean
 ```
 
 Project structure:
@@ -84,12 +87,16 @@ myapp/
 ├── .vscode/
 ├── config/
 │   ├── app.json
+│   ├── graphql.json
 │   └── logger.json
 ├── docs/
 ├── lib/
 ├── package.json
 ├── src/
 │   ├── app.ts
+│   ├── graphql/
+│   │   ├── resolvers/
+│   │   └── types/
 │   ├── index.ts
 │   ├── models/
 │   ├── routes/
@@ -120,38 +127,78 @@ myapp/
 ├── .vscode/
 ├── config/
 │   ├── app.json
+│   ├── graphql.json
 │   └── logger.json
 ├── lib/
 │   ├── app.js
 │   ├── app.js.map
+│   ├── graphql/
+│   │   ├── resolvers/
+│   │   │   ├── comment.js
+│   │   │   ├── comment.js.map
+│   │   │   ├── post.js
+│   │   │   ├── post.js.map
+│   │   │   ├── query.js
+│   │   │   ├── query.js.map
+│   │   │   ├── user.js
+│   │   │   └── user.js.map
+│   │   └── types/
+│   │       ├── comment.js
+│   │       ├── comment.js.map
+│   │       ├── post.js
+│   │       ├── post.js.map
+│   │       ├── query.js
+│   │       ├── query.js.map
+│   │       ├── schema.js
+│   │       ├── schema.js.map
+│   │       ├── user.js
+│   │       └── user.js.map
 │   ├── index.js
 │   ├── index.js.map
 │   ├── models/
 │   │   ├── address.js
 │   │   ├── address.js.map
+│   │   ├── comment.js
+│   │   ├── comment.js.map
 │   │   ├── company.js
 │   │   ├── company.js.map
+│   │   ├── post.js
+│   │   ├── post.js.map
 │   │   ├── user.js
 │   │   └── user.js.map
 │   ├── routes/
 │   │   ├── home.js
 │   │   └── home.js.map
 │   └── services/
-│       ├── user.js
-│       └── user.js.map
+│       ├── blog.js
+│       └── blog.js.map
 ├── package-lock.json
 ├── package.json
 ├── src/
 │   ├── app.ts
+│   ├── graphql/
+│   │   ├── resolvers/
+│   │   │   ├── comment.ts
+│   │   │   ├── post.ts
+│   │   │   ├── query.ts
+│   │   │   └── user.ts
+│   │   └── types/
+│   │       ├── comment.ts
+│   │       ├── post.ts
+│   │       ├── query.ts
+│   │       ├── schema.ts
+│   │       └── user.ts
 │   ├── index.ts
 │   ├── models/
 │   │   ├── address.ts
+│   │   ├── comment.ts
 │   │   ├── company.ts
+│   │   ├── post.ts
 │   │   └── user.ts
 │   ├── routes/
 │   │   └── home.ts
 │   └── services/
-│       └── user.ts
+│       └── blog.ts
 ├── tests/
 │   ├── home.spec.ts
 │   └── tslint.json
@@ -162,7 +209,7 @@ myapp/
     └── home.ejs
 ```
 
-Minimal structure(no tslint/eslint/prettier/vscode/docs)
+Minimal structure(no tslint/eslint/prettier/vscode/docs/graphql)
 
 ```bash
 typolar new myapp --no-tslint --no-prettier --no-init --no-install --clean
@@ -346,6 +393,9 @@ Alternatively you may set envs in the _.env_ file(in your project root directory
 # LOG_APPENDERS
 # LOG_LEVEL
 # LOG_STACK_PRETTY
+
+[graphql]
+# GRAPHQL_UI
 ```
 
 You can extend existing configs or add new configs. See [kuconfig](https://github.com/seancheung/kuconfig)
