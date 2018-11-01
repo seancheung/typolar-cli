@@ -18,7 +18,7 @@
                     "LOG_LEVEL": "debug"
                 }
             },
-            "command": "${workspaceFolder}/node_modules/.bin/ts-node",
+            "command": "${%workspaceFolder%}/node_modules/.bin/ts-node",
             "args": ["--files", "${src}/index.ts"],
             "problemMatcher": ["$tsc"]
         },
@@ -32,7 +32,7 @@
                     "TS_NODE_FILES": "true"
                 }
             },
-            "command": "${workspaceFolder}/node_modules/.bin/nodemon",
+            "command": "${%workspaceFolder%}/node_modules/.bin/nodemon",
             "args": [
                 "-w",
                 "${src}",
@@ -59,7 +59,7 @@
                     "NODE_ENV": "production"
                 }
             },
-            "command": "${workspaceFolder}/node_modules/.bin/tsc",
+            "command": "${%workspaceFolder%}/node_modules/.bin/tsc",
             "args": ["-p", "tsconfig.prod.json"],
             "dependsOn": ["clean:build"],
             "problemMatcher": ["$tsc"],
@@ -76,14 +76,14 @@
             "label": "build:docs",
             "group": "build",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/typedoc",
+            "command": "${%workspaceFolder%}/node_modules/.bin/typedoc",
             "args": [
                 "--out",
                 "${docs}",
                 "--mode",
                 "modules",
                 "--name",
-                "${workspaceFolderBasename}",
+                "${name}",
                 "--hideGenerator",
                 "--excludeNotExported",
                 "--excludeExternals",
@@ -102,7 +102,7 @@
         {
             "label": "test:all",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/_mocha",
+            "command": "${%workspaceFolder%}/node_modules/.bin/_mocha",
             "args": ["-r", "ts-node/register", "${tests}/**/*.spec.ts"],
             "options": {
                 "env": {
@@ -120,8 +120,8 @@
         {
             "label": "test:current",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/_mocha",
-            "args": ["-r", "ts-node/register", "${file}"],
+            "command": "${%workspaceFolder%}/node_modules/.bin/_mocha",
+            "args": ["-r", "ts-node/register", "${%file%}"],
             "options": {
                 "env": {
                     "NODE_ENV": "test",
@@ -136,7 +136,7 @@
         {
             "label": "lint:all",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/tslint",
+            "command": "${%workspaceFolder%}/node_modules/.bin/tslint",
             "args": [
                 "--outputAbsolutePaths",
                 "'${src}/**/*.ts'",
@@ -150,7 +150,7 @@
         {
             "label": "format:all",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/prettier",
+            "command": "${%workspaceFolder%}/node_modules/.bin/prettier",
             "args": [
                 "--write",
                 "\"{${src},${tests},${config}}/**/*.{json,ts,js}\""
@@ -160,9 +160,9 @@
         {
             "label": "format:dirty",
             "type": "shell",
-            "command": "(git ls-files --modified && git ls-files --others --exclude-standard) | grep -E '\\.(json|ts|js)$' | xargs -I {} ${workspaceFolder}/node_modules/.bin/prettier --write {}",
+            "command": "(git ls-files --modified && git ls-files --others --exclude-standard) | grep -E '\\.(json|ts|js)$' | xargs -I {} ${%workspaceFolder%}/node_modules/.bin/prettier --write {}",
             "windows": {
-                "command": "for /f %i in ('git ls-files --modified ^&^& git ls-files --others --exclude-standard ^| find /v \"\" ^| findstr /irc:\"\\..*json$\" /c:\"\\..*ts$\" /c:\"\\..*js$\"') do \"${workspaceFolder}\\node_modules\\.bin\\prettier\" --write %i",
+                "command": "for /f %i in ('git ls-files --modified ^&^& git ls-files --others --exclude-standard ^| find /v \"\" ^| findstr /irc:\"\\..*json$\" /c:\"\\..*ts$\" /c:\"\\..*js$\"') do \"${%workspaceFolder%}\\node_modules\\.bin\\prettier\" --write %i",
                 "options": {
                     "shell": {
                         "args": ["/q", "/d", "/c"]
@@ -176,14 +176,14 @@
         {
             "label": "clean:docs",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/del-cli \"${docs}/**\" \"!${docs}\" \"!.gitignore\"",
+            "command": "${%workspaceFolder%}/node_modules/.bin/del-cli \"${docs}/**\" \"!${docs}\" \"!.gitignore\"",
             "problemMatcher": []
         },
 #end
         {
             "label": "clean:build",
             "type": "shell",
-            "command": "${workspaceFolder}/node_modules/.bin/del-cli \"${build}/**\" \"!${build}\" \"!.gitignore\"",
+            "command": "${%workspaceFolder%}/node_modules/.bin/del-cli \"${build}/**\" \"!${build}\" \"!.gitignore\"",
             "problemMatcher": []
         },
 #if docs
@@ -191,10 +191,10 @@
             "label": "view:docs",
             "type": "shell",
             "command": "open",
-            "args": ["${workspaceFolder}/${docs}/index.html"],
+            "args": ["${%workspaceFolder%}/${docs}/index.html"],
             "windows": {
                 "command": "start",
-                "args": ["${workspaceFolder}\\${docs}\\index.html"]
+                "args": ["${%workspaceFolder%}\\${docs}\\index.html"]
             },
             "problemMatcher": [],
             "presentation": {

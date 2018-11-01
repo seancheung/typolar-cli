@@ -1,6 +1,6 @@
 {
     "name": "typolar-cli",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "CLI for Typolar projects",
     "bin": {
         "typolar": "cli.js"
@@ -28,10 +28,10 @@
         "commander": "^2.19.0",
         "cross-spawn": "^6.0.5",
         "stringcase": "^4.3.0",
-        "typolar-template": "^0.2.0"
+        "typolar-template": "^0.3.0"
     },
     "devDependencies": {
-        "prettier": "^1.14.3",
-        "eslint": "^5.7.0"
+        "eslint": "^5.8.0",
+        "prettier": "^1.14.3"
     }
 }

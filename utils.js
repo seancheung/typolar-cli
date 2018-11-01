@@ -161,7 +161,7 @@ module.exports = {
     parse(template, vars) {
         const resolve = require('typolar-template');
 
-        return resolve(template, vars, { safeInterpo: true });
+        return resolve(template, vars);
     },
 
     /**
