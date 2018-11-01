@@ -10,7 +10,7 @@ export class BlogService extends Service {
      * @param id user id
      */
     async getUser(id: number): Promise<User> {
-        const data = await this._get<User>(`/users/${id}`)
+        const data = await this._get<User>(`/users/${%id%}`)
         const user = new User(data)
         this._logger.debug(user)
         return user
@@ -22,7 +22,7 @@ export class BlogService extends Service {
      * @param id post id
      */
     async getPost(id: number): Promise<Post> {
-        const data = await this._get<Post>(`/posts/${id}`)
+        const data = await this._get<Post>(`/posts/${%id%}`)
         const post = new Post(data)
         this._logger.debug(post)
         return post
