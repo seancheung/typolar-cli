@@ -305,7 +305,7 @@ function create(dir, options) {
     }
     if (options.clean) {
         // .env
-        utils.copy('templates/example/.env.typo', path.join(dir, '.env'), vars);
+        utils.copy('templates/.env.template.typo', path.join(dir, '.env'), vars);
     } else {
         // example
         utils.copy('templates/example/.env.typo', path.join(dir, '.env'), vars);
