@@ -215,7 +215,7 @@ function create(dir, options) {
     // .gitattributes
     utils.copy('templates/.gitattributes.typo', path.join(dir, '.gitattributes'), vars);
     // env
-    utils.copy('templates/.env.template.typo', path.join(dir, '.env.template'));
+    utils.copy('templates/.env.template.typo', path.join(dir, '.env.template'), vars);
     // config/app.json
     utils.copy('templates/config/app.json.typo', path.join(dir, dirs.config, 'app.json'), vars);
     // config/logger.json
@@ -305,10 +305,10 @@ function create(dir, options) {
     }
     if (options.clean) {
         // .env
-        utils.copy('templates/example/.env.typo', path.join(dir, '.env'));
+        utils.copy('templates/example/.env.typo', path.join(dir, '.env'), vars);
     } else {
         // example
-        utils.copy('templates/example/.env.typo', path.join(dir, '.env'));
+        utils.copy('templates/example/.env.typo', path.join(dir, '.env'), vars);
         utils.copy(
             'templates/example/models/user.ts.typo',
             path.join(dir, entry, dirs.models, 'user.ts'),
