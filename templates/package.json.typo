@@ -30,7 +30,7 @@
         "graphql": "^14.0.2",
         "graphql-tools": "^4.0.3",
 #end
-        "typolar": "^0.10.0",
+        "typolar": "^0.11.2",
         "ejs": "^2.6.1"
     },
     "devDependencies": {

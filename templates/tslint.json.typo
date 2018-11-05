@@ -30,6 +30,8 @@
         "interface-name": false,
         "unified-signatures": false,
         "forin": false,
+        "variable-name": [true, "ban-keywords"],
+        "one-variable-per-declaration": false,
         "file-name-casing": [true, "${convention}-case"],
         "trailing-comma": [
             true,
