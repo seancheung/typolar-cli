@@ -1,18 +1,27 @@
 import { expect } from 'chai'
 #if http
 import request from 'supertest'
-import Application from 'typolar'
 #end
 
 describe('<%name|spacecase%> test', function () {
+#if http
+    before(async function () {
+        // OPTIONAL: setup
+        const app = await import('../src/app')
+        this.app = app.default.express
+#else
     before(function () {
         // OPTIONAL: setup
-#if http
-        this.app = new Application().express
 #end
     })
 
-    it('test case description', async function () {
+    it('test case description', 
+#if http
+    async function
+#else
+    function
+#end
+    () {
         // TODO: test case
 #if http
         await request(this.app)
