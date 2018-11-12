@@ -10,7 +10,7 @@ export default class <%name|pascalcase%>Controller extends Controller {
         res.json({ id: req.params.id })
     }
 
-    @route('/', 'post', [guards.fields({ name: '<%name|spacecase%> name' })])
+    @route('/', 'post', [guards.body({ name: '<%name|spacecase%> name' })])
     create<%name|pascalcase%>(req: Request, res: Response, next: Next) {
         // TODO: handle request
         res.json({ name: req.body.name })

@@ -1,6 +1,6 @@
 {
     "name": "typolar-cli",
-    "version": "0.4.2",
+    "version": "0.5.0",
     "description": "CLI for Typolar projects",
     "bin": {
         "typolar": "cli.js"

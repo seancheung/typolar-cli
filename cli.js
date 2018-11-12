@@ -5,7 +5,7 @@ const utils = require('./utils');
 
 program
     .name('typolar')
-    .version('0.2.1')
+    .version('0.5.0')
     .option('-w, --wrokdir <dir>', 'change work directory')
     .option('--rc <filepath>', 'set typolarrc filepath')
     .option('-v, --verbose', 'enable verbose output');
@@ -224,6 +224,8 @@ function create(dir, options) {
         path.join(dir, dirs.config, 'logger.json'),
         vars
     );
+    // config/cache.json
+    utils.copy('templates/config/cache.json.typo', path.join(dir, dirs.config, 'cache.json'), vars);
     if (options.graphql) {
         // config/graphql.json
         utils.copy(

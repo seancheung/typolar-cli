@@ -1,0 +1,33 @@
+{
+    "driver": {
+        "$env": ["CACHE_DRIVER", ":memory:"]
+    },
+    "host": {
+        "$env": ["CACHE_HOST", "localhost]
+    },
+    "port": {
+        "$number": {
+            "$env": ["CACHE_PORT", 11211]
+        }
+    },
+    "lib": "node_memcached",
+    "prefix": {
+        "$env": "CACHE_PREFIX"
+    },
+    "username": {
+        "$env": "CACHE_USERNAME"
+    },
+    "password": {
+        "$env": "CACHE_PWD"
+    },
+    "session": {
+        "ttl": {
+            "$number": {
+                "$env": ["CACHE_SESSION_TTL", 7200]
+            }
+        },
+        "secret": {
+            "$env": "CACHE_SESSION_SECRET"
+        }
+    }
+}
