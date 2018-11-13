@@ -3,3 +3,13 @@ import Application from 'typolar'
 const app = new Application(__dirname)
 
 export default app
+
+// tslint:disable:no-empty-interface
+declare module 'kuconfig' {
+    interface Config {
+        // TODO: extend config
+    }
+    namespace Config {
+        // TODO: extend config
+    }
+}
