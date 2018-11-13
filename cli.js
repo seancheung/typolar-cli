@@ -234,8 +234,6 @@ function create(dir, options) {
             vars
         );
     }
-    // config.d.ts
-    utils.copy('templates/config.d.ts.typo', path.join(dir, entry, 'config.d.ts'), vars);
     // index.ts
     utils.copy('templates/index.ts.typo', path.join(dir, entry, 'index.ts'), vars);
     // app.ts

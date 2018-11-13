@@ -1,6 +1,6 @@
 {
     "name": "typolar-cli",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "CLI for Typolar projects",
     "bin": {
         "typolar": "cli.js"
@@ -31,7 +31,7 @@
         "typolar-template": "^0.3.0"
     },
     "devDependencies": {
-        "eslint": "^5.8.0",
-        "prettier": "^1.14.3"
+        "eslint": "^5.9.0",
+        "prettier": "^1.15.2"
     }
 }
